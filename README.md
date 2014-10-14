@@ -15,7 +15,7 @@ The tool is hosted online at [github-issue-mover.appspot.com](https://github-iss
 
 It looks like this:
 
-<img width="600px" src="github-issue-mover/raw/master/README_assets/app.png">
+<img width="600px" src="/google/github-issue-mover/raw/master/README_assets/app.png">
 
 
 ##How to use
@@ -30,7 +30,7 @@ into the "Issue to Move" text field. It will get automatically transformed to th
 
 The tool will extract some information about the issue if it's accessible to your user:
 
-<img width="300px" src="github-issue-mover/raw/master/README_assets/issue.png">
+<img width="300px" src="/google/github-issue-mover/raw/master/README_assets/issue.png">
 
 You can do the same for the "Destination Repo" text field and copy paste:
 
@@ -42,15 +42,15 @@ It will get automatically transformed to the _short_ GitHub URL for repos:
 
 and some information will get extracted as well:
 
-<img width="300px" src="github-issue-mover/raw/master/README_assets/repo.png">
+<img width="300px" src="/google/github-issue-mover/raw/master/README_assets/repo.png">
 
 Once existing issue and repo have been set you can start the move process:
 
-<img width="300px" src="github-issue-mover/raw/master/README_assets/move.png">
+<img width="300px" src="/google/github-issue-mover/raw/master/README_assets/move.png">
 
 This will create a new issue which is a copy of the original one, with mentions of every users who commented on the bug. The two issues will also references themselves:
 
-<img width="600px" src="github-issue-mover/raw/master/README_assets/result.png">
+<img width="600px" src="/google/github-issue-mover/raw/master/README_assets/result.png">
 
 ##Disclaimer
 
