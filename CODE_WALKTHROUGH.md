@@ -8,7 +8,7 @@ TODO
 
 ## Deploying your own instance
 
-This app runs in a Docker container and has an [automated Build repo](https://registry.hub.docker.com/u/google/github-issue-mover) on Docker hub. It can easily be deployed on [Google Compute Engine](https://cloud.google.com/compute/) or on [Google App Engine Managed VM](https://cloud.google.com/appengine/docs/managed-vms/).
+This app runs in a Docker container and has an [automated Build repo](https://registry.hub.docker.com/u/nicolasgarnier/github-issue-mover) on Docker hub. It can easily be deployed on [Google Compute Engine](https://cloud.google.com/compute/) or on [Google App Engine Managed VM](https://cloud.google.com/appengine/docs/managed-vms/).
 
 ### App Setup
 
