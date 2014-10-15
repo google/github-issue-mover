@@ -34,7 +34,7 @@ void main() {
   // Create a force HTTP server.
   WebServer server = new WebServer(host: '0.0.0.0',
                                    port: 8080,
-                                   clientFiles: '../web/',
+                                   clientFiles: '../build/web/',
                                    views: './views/');
 
   // Set up logging.
