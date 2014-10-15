@@ -34,12 +34,12 @@ IssueRequest getIssueRequest(Issue issue) {
 }
 
 /// Adds the list of given [comments] to the [issue] using an instance of a
-/// [github] client library.
+/// [gitHub] client library.
 ///
 /// You can pass a [tracker] callback [Function] that will be called after each
 /// [IssueComment] creation. It the following arguments:
 /// `tracker(number of comments created, total number of comments)`
-Future<List<IssueComment>> addCommentsToIssue(GitHub github,
+Future<List<IssueComment>> addCommentsToIssue(GitHub gitHub,
     List<IssueComment> comments,
     Issue issue,
     Repository repo,
@@ -56,7 +56,7 @@ Future<List<IssueComment>> addCommentsToIssue(GitHub github,
     _completer.complete(new List<IssueComment>());
   } else {
     IssueComment nextCommentToAdd = comments.removeAt(0);
-    github.issues.createComment(repo.slug(), issue.number,
+    gitHub.issues.createComment(repo.slug(), issue.number,
         nextCommentToAdd.body).then((IssueComment comment) {
           _commentsAdded.add(comment);
           // Calls the Tracker callback function if it exists.
@@ -70,9 +70,9 @@ Future<List<IssueComment>> addCommentsToIssue(GitHub github,
           } else {
             // The GitHub API will often create Comments in the wrong order if
             // they are created too fast. Wait 1 sec between issue creations
-            // to workarround this bug.
+            // to workaround this bug.
             var timer = new Timer(new Duration(milliseconds: 1000), (){
-                addCommentsToIssue(github, comments, issue, repo, tracker,
+                addCommentsToIssue(gitHub, comments, issue, repo, tracker,
                     _completer, _commentsAdded);
             });
         }
@@ -81,13 +81,13 @@ Future<List<IssueComment>> addCommentsToIssue(GitHub github,
   return _completer.future;
 }
 
-/// Represents A github.com URL.
+/// Represents a www.github.com URL.
 ///
 /// This class offers helpers to parse and simplify the URL.
-/// Only implmented support for Issue and Repo URLs at this point.
+/// Only implemented support for Issue and Repo URLs at this point.
 class GitHubUrl {
 
-  /// Owner of the repos. Can be a user or an organization.
+  /// Owner of the repositories. Can be a user or an organization.
   String ownerName;
 
   /// Name of the repo.
@@ -99,41 +99,41 @@ class GitHubUrl {
   /// The full HTTPS URL.
   String fullUrl;
 
-  /// The URL simplified in GIthub short URL format.
+  /// The URL simplified in GitHub short URL format.
   String simplifiedUrl;
 
   /// Parses a full GitHub [url] and returns a [GitHubUrl].
   static GitHubUrl parse(String url) {
     url = url.trim();
-    GitHubUrl githubUrl = new GitHubUrl();
-    githubUrl.fullUrl = url;
-    githubUrl.simplifiedUrl = simplifyUrl(url);
+    GitHubUrl gitHubUrl = new GitHubUrl();
+    gitHubUrl.fullUrl = url;
+    gitHubUrl.simplifiedUrl = simplifyUrl(url);
 
     RegExp exp = new RegExp(r"([\w-_\.]+)\/([\w-_\.]+)(\#(\d+))?");
-    Match match = exp.firstMatch(githubUrl.simplifiedUrl);
+    Match match = exp.firstMatch(gitHubUrl.simplifiedUrl);
     if (match == null) {
       throw new FormatException("Wrong format of GitHub URL");
     }
-    githubUrl.ownerName = match.group(1);
-    githubUrl.repoName = match.group(2);
-    githubUrl.issueNumber = match.group(4);
-    if (githubUrl.ownerName == "") githubUrl.ownerName = null;
-    if (githubUrl.repoName == "") githubUrl.repoName = null;
-    if (githubUrl.issueNumber == "") githubUrl.issueNumber = null;
+    gitHubUrl.ownerName = match.group(1);
+    gitHubUrl.repoName = match.group(2);
+    gitHubUrl.issueNumber = match.group(4);
+    if (gitHubUrl.ownerName == "") gitHubUrl.ownerName = null;
+    if (gitHubUrl.repoName == "") gitHubUrl.repoName = null;
+    if (gitHubUrl.issueNumber == "") gitHubUrl.issueNumber = null;
 
-    return githubUrl;
+    return gitHubUrl;
   }
 
   /// Takes a [fullGitHubUrl] URL e.g.
   /// `https://github.com/ForceUniverse/dart-forcemvc/issues/13`
   /// and returns the simplified form e.g. `ForceUniverse/dart-forcemvc#13`.
   static String simplifyUrl(String fullGitHubUrl) {
-    String simplifiedfUrl = fullGitHubUrl;
-    if (simplifiedfUrl.startsWith("https://github.com/")) {
-      simplifiedfUrl = simplifiedfUrl.substring("https://github.com/".length);
+    String simplifiedUrl = fullGitHubUrl;
+    if (simplifiedUrl.startsWith("https://github.com/")) {
+      simplifiedUrl = simplifiedUrl.substring("https://github.com/".length);
     }
-    simplifiedfUrl = simplifiedfUrl.replaceFirst("/issues/", "#");
-    simplifiedfUrl = simplifiedfUrl.replaceFirst("/issues", "");
-    return simplifiedfUrl;
+    simplifiedUrl = simplifiedUrl.replaceFirst("/issues/", "#");
+    simplifiedUrl = simplifiedUrl.replaceFirst("/issues", "");
+    return simplifiedUrl;
   }
 }

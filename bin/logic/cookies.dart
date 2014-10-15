@@ -18,7 +18,7 @@ part of github_issue_mover;
 ///
 /// Cookies allow us not to use server-side Sessions. It's tricky to use
 /// Server-side sessions on App Engine because the user might not hit the same
-/// backend instance during a session so we would need to use datastore backed
+/// backend instance during a session so we would need to use data-store backed
 /// sessions which is not yet implemented.
 class CookiesHelper {
 

@@ -15,54 +15,57 @@
 /// Contains all the auto-suggestion widget related code.
 part of githubissuemover;
 
-/// Input the autcompletion is currently running on.
+/// Input the auto-completion is currently running on.
 InputElement activeInput;
 
-/// Dropdown the autcompletion is currently running on.
-UListElement dropdown;
+/// Drop-down the auto-completion is currently running on.
+UListElement dropDown;
 
-/// Define what type of GitHub element the autocomplete is used for. Can either
+/// Define what type of GitHub element the auto-complete is used for. Can either
 /// be [ISSUE_MODE], [OWNER_MODE] or [REPO_MODE].
 Symbol mode = ISSUE_MODE;
 
-/// Used to set autocompletion on Issues.
+/// Used to set auto-completion on Issues.
 const Symbol ISSUE_MODE = #ISSUE;
-/// Used to set autocompletion on Owners.
+/// Used to set auto-completion on Owners.
 const Symbol OWNER_MODE = #OWNER;
-/// Used to set autocompletion on Repos.
+/// Used to set auto-completion on Repositories.
 const Symbol REPO_MODE = #REPO;
 
-/// Cache of all owners (username, orgs) the user has repos in.
+/// Cache of all owners (username and organizations) the user has repositories
+/// into.
 List<String> ownersList = new List<String>();
-/// Cache of all repos mapped by owners.
-Map<String, List<Repository>> reposList = new Map<String, List<Repository>>();
-/// Cache of issues mapped by full repos name.
+/// Cache of all repositories mapped by owners.
+Map<String, List<Repository>> repositoriesList =
+    new Map<String, List<Repository>>();
+/// Cache of issues mapped by full repositories name.
 Map<String, List<Issue>> issuesCache = new Map<String, List<Issue>>();
 
-/// Initializes the Autocompletion module by fetching all repos the user has
-/// access to and caching them.
+/// Initializes the Auto-completion module by fetching all repositories the user
+/// has access to and caching them.
 initAutoSuggest() {
 
-  // Disable Up and Down keys default behavior when dropdown is active
+  // Disable Up and Down keys default behavior when drop-down is active to avoid
+  // page or widget scrolling.
   document.onKeyDown.listen((e){
     if((e.keyCode == KeyCode.DOWN || e.keyCode == KeyCode.UP)
-        && document.activeElement.parent == dropdown) {
+        && document.activeElement.parent == dropDown) {
       e.preventDefault();
       }
   });
-  issueDropdown.onKeyDown.listen((e){
+  issueDropDown.onKeyDown.listen((e){
     if(e.keyCode == KeyCode.DOWN || e.keyCode == KeyCode.UP) {
       e.preventDefault();
     }
   });
-  repoDropdown.onKeyDown.listen((e){
+  repoDropDown.onKeyDown.listen((e){
     if(e.keyCode == KeyCode.DOWN || e.keyCode == KeyCode.UP) {
       e.preventDefault();
     }
   });
 
-  // Build the index of all Owners and repos the user has access to.
-  github.repositories.listRepositories().toList().then(
+  // Build the index of all owners and repositories the user has access to.
+  gitHub.repositories.listRepositories().toList().then(
       (List<Repository> repos) {
         Map<String, bool> uniqueOwnersList = new Map<String, bool>();
         repos.forEach((Repository repo) {
@@ -72,57 +75,60 @@ initAutoSuggest() {
         ownersList.addAll(uniqueOwnersList.keys);
         refreshAutoSuggest();
       });
-  github.organizations.list().toList().then((List<Organization> orgs) {
-    orgs.forEach((Organization org) {
-      ownersList.add(org.login);
-      refreshAutoSuggest();
-      github.repositories.listUserRepositories(org.login).toList().then(
-          (List<Repository> repos) {
-            repos.forEach((Repository repo) => _addRepoToCache(repo));
-            refreshAutoSuggest();
-          });
-    });
+  // List all organizations the user is a member of. Fetch repositories for each
+  // organizations.
+  gitHub.organizations.list().toList().then(
+      (List<Organization> orgs) {
+        orgs.forEach((Organization org) {
+          ownersList.add(org.login);
+          refreshAutoSuggest();
+          gitHub.repositories.listUserRepositories(org.login).toList().then(
+            (List<Repository> repos) {
+              repos.forEach((Repository repo) => _addRepoToCache(repo));
+              refreshAutoSuggest();
+            });
+      });
   });
 }
 
 /// Adds the given [repo] to the cache.
 _addRepoToCache(Repository repo) {
-  if(reposList[repo.owner.login] == null) {
-    reposList[repo.owner.login] = new List<Repository>();
+  if(repositoriesList[repo.owner.login] == null) {
+    repositoriesList[repo.owner.login] = new List<Repository>();
   }
-  reposList[repo.owner.login].add(repo);
+  repositoriesList[repo.owner.login].add(repo);
 }
 
-/// Setup the Autocompletion module to be used on the Issue Input field.
+/// Setup the auto-completion module to be used on the Issue Input field.
 refreshIssueAutoSuggest([e]) {
   activeInput = issueInput;
-  dropdown = issueDropdown;
+  dropDown = issueDropDown;
   mode = ISSUE_MODE;
   refreshAutoSuggest(e);
 }
 
-/// Setup the Autocompletion module to be used on the Repo Input field.
+/// Setup the auto-completion module to be used on the Repo Input field.
 refreshRepoAutoSuggest([e]) {
   activeInput = repoInput;
-  dropdown = repoDropdown;
+  dropDown = repoDropDown;
   mode = REPO_MODE;
   refreshAutoSuggest(e);
 }
 
 
-/// Displays the current dropdown.
-displayDropDown([_]) => dropdown.style.display = "block";
+/// Displays the current drop-down.
+displayDropDown([_]) => dropDown.style.display = "block";
 
 /// Refreshes the list of suggestions based on the user input and what's in the
 /// cache.
 refreshAutoSuggest([e]) {
-  if(document.activeElement.parent != dropdown
+  if(document.activeElement.parent != dropDown
       && document.activeElement != activeInput) {
     return false;
   }
   displayDropDown();
   if(e != null && e is KeyboardEvent && e.keyCode == KeyCode.DOWN) {
-    (dropdown.firstChild as LIElement).focus();
+    (dropDown.firstChild as LIElement).focus();
     // don't display errors for the issue.
     querySelector("#issueError").style.display = "none";
     return false;
@@ -140,16 +146,16 @@ refreshAutoSuggest([e]) {
   // User is typing the repo name.
   } else if(!input.contains("#")) {
     // Filter repo based on prefix and if the repo has any issues.
-    List<Repository> ownerRepos = reposList[input.split("/")[0]];
-    if(ownerRepos != null) {
+    List<Repository> ownerRepositories = repositoriesList[input.split("/")[0]];
+    if(ownerRepositories != null) {
       List<Repository> matchingRepos = new List<Repository>()
-          ..addAll(ownerRepos)
+          ..addAll(ownerRepositories)
           ..retainWhere((Repository repo) => repo.fullName.startsWith(input)
               && repo.hasIssues
               && (repo.openIssuesCount > 0 || mode == REPO_MODE));
-      _setAutoSuggestList(repos: matchingRepos);
+      _setAutoSuggestList(repositories: matchingRepos);
     } else {
-      dropdown.children.clear();
+      dropDown.children.clear();
       stopAutoSuggest();
     }
 
@@ -161,7 +167,7 @@ refreshAutoSuggest([e]) {
     if (issues == null) {
       issues  = new List<Issue>();
       issuesCache["${url.ownerName}/${url.repoName}"] = issues;
-        Stream<Issue> issuesStream = github.issues.listByRepo(
+        Stream<Issue> issuesStream = gitHub.issues.listByRepo(
             new RepositorySlug(url.ownerName, url.repoName));
         issuesStream.listen((Issue issue){
           if (!issue.htmlUrl.contains("\/pull\/")) {
@@ -183,33 +189,33 @@ refreshAutoSuggest([e]) {
   return false;
 }
 
-/// Display the given items in the autosuggest widget with formatting depending
-/// on wether we want to display [issues], [repos] or [owners].
+/// Display the given items in the auto-suggest widget with formatting depending
+/// on whether we want to display [issues], [repositories] or [owners].
 /// Only one list of item must be specified
-_setAutoSuggestList({List<String> owners, List<Repository> repos,
+_setAutoSuggestList({List<String> owners, List<Repository> repositories,
     List<Issue> issues}) {
   String selectedElementText;
-  if (document.activeElement.parent == dropdown) {
+  if (document.activeElement.parent == dropDown) {
     selectedElementText = document.activeElement.attributes["value"];
   }
-  dropdown.children.clear();
+  dropDown.children.clear();
   if(owners != null) {
     owners.forEach((String owner) {
       String info = "... repositories";
-      if (reposList[owner] != null) {
-        info = "${reposList[owner].length} repositories";
+      if (repositoriesList[owner] != null) {
+        info = "${repositoriesList[owner].length} repositories";
       }
       LIElement elem = _createDropDownElement("$owner/", info,
           isFinalValue: mode == OWNER_MODE);
-      dropdown.children.add(elem);
+      dropDown.children.add(elem);
     });
-  } else if (repos != null) {
-    repos.forEach((Repository repo) {
+  } else if (repositories != null) {
+    repositories.forEach((Repository repo) {
       LIElement elem = _createDropDownElement(
           repo.fullName + (mode == REPO_MODE ? "" : "#"),
           "${repo.openIssuesCount} open issues",
           isFinalValue: mode == REPO_MODE);
-      dropdown.children.add(elem);
+      dropDown.children.add(elem);
     });
   } else if (issues != null) {
     issues.forEach((Issue issue) {
@@ -217,20 +223,20 @@ _setAutoSuggestList({List<String> owners, List<Repository> repos,
           GitHubUrl.parse(issue.htmlUrl).simplifiedUrl,
           issue.title,
           isFinalValue: mode == ISSUE_MODE);
-      dropdown.children.add(elem);
+      dropDown.children.add(elem);
     });
   }
-  // Re-apply focus if we currenrly had to refresh while the user was browsing
-  // the dropdown list.
+  // Re-apply focus if we currently had to refresh while the user was browsing
+  // the drop-down list.
   if(selectedElementText != null) {
     displayDropDown();
-    LIElement newSelected = dropdown.children.firstWhere(
+    LIElement newSelected = dropDown.children.firstWhere(
         (LIElement elem) => elem.attributes["value"] == selectedElementText);
     newSelected.focus();
   }
 }
 
-/// Creates the `<li>` element for the dropdown.
+/// Creates the `<li>` element for the drop-down.
 LIElement _createDropDownElement(String text, String info,
                                  {bool isFinalValue: false}) {
   LIElement elem = new LIElement();
@@ -238,7 +244,7 @@ LIElement _createDropDownElement(String text, String info,
   elem.attributes["finalValue"] = "$isFinalValue";
   elem.onFocus.listen(displayDropDown);
   elem.onBlur.listen(stopAutoSuggest);
-  elem.onKeyDown.listen(dropdownElemKeyPress);
+  elem.onKeyDown.listen(dropDownElemKeyPress);
   elem.onClick.listen(selectDropDownItem);
   elem.onFocus.listen(displayDropDown);
   elem.text = text;
@@ -254,9 +260,9 @@ LIElement _createDropDownElement(String text, String info,
   return elem;
 }
 
-/// Handles keypress events when in the autosuggest dropdown.
-dropdownElemKeyPress(KeyEvent e) {
-  LIElement dropdownItem = e.target;
+/// Handles key press events when in the auto-suggest drop-down.
+dropDownElemKeyPress(KeyEvent e) {
+  LIElement dropDownItem = e.target;
   if (e.keyCode == KeyCode.ENTER) {
     selectDropDownItem(e);
     e.preventDefault();
@@ -265,15 +271,15 @@ dropdownElemKeyPress(KeyEvent e) {
     stopAutoSuggest();
     e.preventDefault();
   } else  if (e.keyCode == KeyCode.DOWN
-      && dropdownItem.nextElementSibling != null) {
-    dropdownItem.nextElementSibling.focus();
+      && dropDownItem.nextElementSibling != null) {
+    dropDownItem.nextElementSibling.focus();
     e.preventDefault();
   } else  if (e.keyCode == KeyCode.UP
-      && dropdownItem.previousElementSibling == null) {
+      && dropDownItem.previousElementSibling == null) {
     activeInput.focus();
     e.preventDefault();
   } else  if (e.keyCode == KeyCode.UP) {
-    dropdownItem.previousElementSibling.focus();
+    dropDownItem.previousElementSibling.focus();
     e.preventDefault();
   }
   return false;
@@ -281,20 +287,20 @@ dropdownElemKeyPress(KeyEvent e) {
 
 /// Handles selection (Click or Enter key) of an item in the suggestions.
 selectDropDownItem(e) {
-  LIElement dropdownItem = e.target;
-  activeInput.value = dropdownItem.attributes["value"];
+  LIElement dropDownItem = e.target;
+  activeInput.value = dropDownItem.attributes["value"];
   activeInput.focus();
   e.stopImmediatePropagation();
-  if (dropdownItem.attributes["finalValue"] == "true"){
+  if (dropDownItem.attributes["finalValue"] == "true"){
     activeInput.dispatchEvent(new CustomEvent("change"));
   }
   return false;
 }
 
-/// Hides the autosuggest widget.
+/// Hides the auto-suggest widget.
 stopAutoSuggest([_]) {
-  if (document.activeElement.parent != dropdown) {
-    dropdown.style.display = "none";
+  if (document.activeElement.parent != dropDown) {
+    dropDown.style.display = "none";
   }
 }
 

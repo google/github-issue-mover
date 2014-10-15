@@ -15,82 +15,77 @@
 /// Contains all the UI related actions.
 part of githubissuemover;
 
-/// Displays the details of the given Issue in the "IssueOverview" div.
+/// Displays the details of the given [issue] in the "IssueOverview" div.
 displayIssueDetails(Issue issue) {
-  AnchorElement issueTitle = querySelector("#issueOverview #issueTitle");
-  issueTitle.text = "${issue.title} #${issue.number}";
-  issueTitle.href = issue.htmlUrl;
-  AnchorElement issueUserName = querySelector("#issueOverview #issueUserName");
-  issueUserName.text = issue.user.login;
-  issueUserName.href = issue.user.htmlUrl;
-  (querySelector("#issueOverview #issueUserAvatar") as ImageElement).src =
-      issue.user.avatarUrl;
-  querySelector("#issueOverview #issueBody").innerHtml =
-      issue.body != "" ? markdownToHtml(issue.body) : "No description provided.";
-  querySelector("#issueOverview #issueComments").text =
-      "${issue.commentsCount} Comment(s)";
-  querySelector("#issueError").style.display = "none";
-  querySelector("#issueOverview").style.display = "block";
+  issueOverviewTitle.text = "${issue.title} #${issue.number}";
+  issueOverviewTitle.href = issue.htmlUrl;
+  issueOverviewUserName.text = issue.user.login;
+  issueOverviewUserName.href = issue.user.htmlUrl;
+  issueOverviewUserAvatar.src = issue.user.avatarUrl;
+  issueOverviewBody.innerHtml = issue.body != ""
+      ? markdownToHtml(issue.body) : "No description provided.";
+  issueOverviewComment.text = "${issue.commentsCount} Comment(s)";
+  issueError.style.display = "none";
+  issueOverview.style.display = "block";
 }
 
-/// Displays the details of the given Issue in the "IssueOverview" div.
+/// Displays the details of the given [repo] in the "RepoOverview" div.
 displayRepoDetails(Repository repo) {
-  AnchorElement repoName = querySelector("#repoOverview #repoName");
-  repoName.text = repo.fullName;
-  repoName.href = repo.htmlUrl;
-  querySelector("#repoOverview #repoDescription").text =
+  repoOverviewName.text = repo.fullName;
+  repoOverviewName.href = repo.htmlUrl;
+  repoOverviewDescription.text =
       repo.description != "" ? repo.description : "No description provided.";
-  querySelector("#repoError").style.display = "none";
-  querySelector("#repoOverview").style.display = "block";
+  repoError.style.display = "none";
+  repoOverview.style.display = "block";
 }
 
 /// Displays an error about the issue input.
 displayIssueError(String errorMessage) {
-  querySelector("#issueError").style.display = "block";
-  querySelector("#issueError").text = errorMessage;
-  querySelector("#issueOverview").style.display = "none";
+  issueError.style.display = "block";
+  issueError.text = errorMessage;
+  issueOverview.style.display = "none";
 }
 
 /// Clears the Issue details section.
 clearIssue() {
-  querySelector("#issueError").style.display = "none";
-  querySelector("#issueOverview").style.display = "none";
+  issueError.style.display = "none";
+  issueOverview.style.display = "none";
 }
 
 /// Displays an Error about the Repo Input.
 displayRepoError(String errorMessage) {
-  querySelector("#repoError").style.display = "block";
-  querySelector("#repoError").text = errorMessage;
-  querySelector("#repoOverview").style.display = "none";
+  repoError.style.display = "block";
+  repoError.text = errorMessage;
+  repoOverview.style.display = "none";
 }
 
-/// Displays an error that happened during the copy issue.
+/// Displays an error that happened during the issue moving process.
 displayMoveError(String errorMessage) {
-  querySelector("#moveError").style.display = "block";
-  querySelector("#moveError").text = errorMessage;
-  querySelector("#close").attributes.remove("disabled");
-  querySelector("#close").focus();
+  moveError.style.display = "block";
+  moveError.text = errorMessage;
+  closeMoveWidgetButton.attributes.remove("disabled");
+  closeMoveWidgetButton.focus();
 }
 
 /// Clears the Repo details section.
 clearRepo() {
-  querySelector("#repoError").style.display = "none";
-  querySelector("#repoOverview").style.display = "none";
+  repoError.style.display = "none";
+  repoOverview.style.display = "none";
 }
 
 /// Hide the "Authorize" button block and show the move issues form.
 displayMoveIssueForm() {
-  querySelector("#authorize").style.display = "none";
-  querySelector("#form").style.display = "table";
-  querySelector("#issue").focus();
+  authorizeContainer.style.display = "none";
+  moveIssueForm.style.display = "table";
+  issueInput.focus();
 }
 
-/// Enables or Disables the "Move" button depending on wether or not we have both
-/// an issue to move and a destination repo.
+/// Enables or Disables the "Move" button depending on whether or not we have
+/// both an issue to move and a destination repo.
 enableDisableMoveButton() {
   // We disable the "Move" button if we don't have a destinationRepo or Issue.
   if (destinationRepo == null || issueToMove == null) {
-    querySelector("#move").attributes["disabled"] = "disabled";
+    moveIssueButton.attributes["disabled"] = "disabled";
     if (destinationRepo != null) {
       displayRepoDetails(destinationRepo);
     }
@@ -103,9 +98,9 @@ enableDisableMoveButton() {
   if (destinationRepoUrl.ownerName == issueToMoveUrl.ownerName
       && destinationRepoUrl.repoName == issueToMoveUrl.repoName) {
     displayRepoError("You can't move an issue to its current repo.");
-    querySelector("#move").attributes["disabled"] = "disabled";
+    moveIssueButton.attributes["disabled"] = "disabled";
   } else {
-    querySelector("#move").attributes.remove("disabled");
+    moveIssueButton.attributes.remove("disabled");
     if (destinationRepo != null) {
       displayRepoDetails(destinationRepo);
     }
@@ -114,106 +109,96 @@ enableDisableMoveButton() {
 
 /// Displays information about the currently authorized GitHub [User].
 displayAuthorizedUser() {
-  AnchorElement login = querySelector("#login");
-  login.text = currentGitHubUser.login;
-  login.href = currentGitHubUser.htmlUrl;
-  (querySelector("#photo") as ImageElement).src = currentGitHubUser.avatarUrl;
-  querySelector("#user").style.display = "block";
+  signedInUserLogin.text = currentGitHubUser.login;
+  signedInUserLogin.href = currentGitHubUser.htmlUrl;
+  signedInUserAvatar.src = currentGitHubUser.avatarUrl;
+  signedInUserContainer.style.display = "block";
 }
 
 /// Hides information about the currently authorized GitHub [User].
 hideAuthorizedUser() {
-  querySelector("#user").style.display = "none";
+  signedInUserContainer.style.display = "none";
 }
 
-/// Close the move details container and re-initilizes it for next use.
+/// Close the move details container and re-initializes it for next use.
 closeMoveResultContainer() {
 
   // Re-initializes all the elements in the move widget.
-  querySelectorAll("#moveResultContainer #content .check").forEach(
-      (element) => element.style.visibility = "hidden");
-  querySelectorAll("#moveResultContainer #content .loading").forEach(
-      (element) => element.style.visibility = "hidden");
-  AnchorElement newIssueLink =
-      querySelector("#moveResultContainer #content #newIssueLink");
+  checkMarks.forEach((element) => element.style.visibility = "hidden");
   newIssueLink.href = "";
   newIssueLink.text = "";
-  AnchorElement oldIssueLink =
-      querySelector("#moveResultContainer #content #oldIssueLink");
   oldIssueLink.href = "";
   oldIssueLink.text = "";
-  querySelector("#numComments").text = "";
-  querySelector("#close").attributes["disabled"] = "disabled";
+  numCommentsMoved.text = "";
+  closeMoveWidgetButton.attributes["disabled"] = "disabled";
 
   // Re-enables all elements in the main form section.
-  querySelector("#move").attributes.remove("disabled");
-  querySelector("#repo").attributes.remove("disabled");
-  querySelector("#issue").attributes.remove("disabled");
+  moveIssueButton.attributes.remove("disabled");
+  repoInput.attributes.remove("disabled");
+  issueInput.attributes.remove("disabled");
 
   // Hide potential Error.
-  querySelector("#moveError").style.display = "none";
+  moveError.style.display = "none";
 
   // Hides the move widget.
-  querySelector("#moveResultContainer").style.display = "none";
+  moveResultContainer.style.display = "none";
 }
 
-/// Displays and initalizes the move details container.
+/// Displays and initializes the move details container.
 initMoveContainer() {
 
   // Disable all elements in the main form section.
-  querySelector("#move").attributes["disabled"] = "disabled";
-  querySelector("#repo").attributes["disabled"] = "disabled";
-  querySelector("#issue").attributes["disabled"] = "disabled";
+  moveIssueButton.attributes["disabled"] = "disabled";
+  repoInput.attributes["disabled"] = "disabled";
+  issueInput.attributes["disabled"] = "disabled";
 
   // Populate Old Issue Link part of the move widget.
-  AnchorElement oldIssueLink = querySelector("#oldIssueLink");
   GitHubUrl issueToMoveUrl = GitHubUrl.parse(issueToMove.htmlUrl);
   oldIssueLink.href = issueToMoveUrl.fullUrl;
   oldIssueLink.text = issueToMoveUrl.simplifiedUrl;
 
   // Display the move details container.
-  querySelector("#moveResultContainer").style.display = "block";
+  moveResultContainer.style.display = "block";
 }
 
 /// Marks the task as done, enables the "Close" button and moves the focus on it.
 markOriginalIssueClosedCompleted() {
-  querySelector("#closeIssueCheck").style.visibility = "visible";
+  closeIssueCheckMark.style.visibility = "visible";
 }
 
 /// Moves the focus to the Close Move Widget button.
 moveFocusToCloseButton() {
-  querySelector("#close").attributes.remove("disabled");
-  querySelector("#close").focus();
+  closeMoveWidgetButton.attributes.remove("disabled");
+  closeMoveWidgetButton.focus();
 }
 
 /// Marks the Comments copy as completed.
 markCommentsCopyCompleted() {
-  querySelector("#copyCommentsCheck").style.visibility = "visible";
+  copyCommentsCheckMark.style.visibility = "visible";
 }
 
 /// Marks the closing comment creation task as completed.
 markClosingCommentCreationCompleted() {
-  querySelector("#referenceCommentCheck").style.visibility = "visible";
+  referenceCommentCheckMark.style.visibility = "visible";
 }
 
 /// Updates the number of Comments that have been copied.
 updateNumCommentsCopied(int num, int total){
-  querySelector("#numComments").text = "$num/$total";
+  numCommentsMoved.text = "$num/$total";
 }
 
 /// Initializes the Comments copy counter.
 initCommentsCounter(int commentsListLength){
-  querySelector("#numComments").text = "0/${commentsListLength}";
+  numCommentsMoved.text = "0/${commentsListLength}";
 }
 
 /// Marks the Creation of the copied Issue completed.
 markCopiedIssueCreationCompleted(){
-  querySelector("#copyIssueCheck").style.visibility = "visible";
+  copyIssueCheckMark.style.visibility = "visible";
 }
 
 /// Display the link to the new issue.
 displayNewIssueLink(Issue newIssue) {
-  AnchorElement newIssueLink = querySelector("#newIssueLink");
   GitHubUrl newIssueUrl = GitHubUrl.parse(newIssue.htmlUrl);
   newIssueLink.href = newIssueUrl.fullUrl;
   newIssueLink.text = newIssueUrl.simplifiedUrl;
@@ -221,7 +206,6 @@ displayNewIssueLink(Issue newIssue) {
 
 /// Simplifies the URL entered in the Issue Input field.
 GitHubUrl simplifyIssueInput() {
-  InputElement issueInput = querySelector("#issue");
   GitHubUrl issueUrl;
   try {
     issueUrl = GitHubUrl.parse(issueInput.value);
@@ -234,7 +218,6 @@ GitHubUrl simplifyIssueInput() {
 
 /// Simplifies the URL entered in the Repo Input field.
 GitHubUrl simplifyRepoInput() {
-  InputElement repoInput = querySelector("#repo");
   GitHubUrl repoUrl;
   try {
     repoUrl = GitHubUrl.parse(repoInput.value);
@@ -247,34 +230,34 @@ GitHubUrl simplifyRepoInput() {
 
 /// Initialize the Repo field if empty and move focus to it.
 initRepoInput(GitHubUrl issueUrl) {
-  InputElement repo = querySelector("#repo");
+  InputElement repo = repoInput;
   if (repo.value.isEmpty) {
     repo.value = "${issueUrl.ownerName}/";
   }
-  querySelector("#repo").focus();
+  repoInput.focus();
 }
 
 /// Disable the Issue Input Field.
 disableIssueInputField() {
-  querySelector("#issue").attributes["disabled"] = "disabled";
+  issueInput.attributes["disabled"] = "disabled";
 }
 
 /// Enables the Issue Input Field.
 enableIssueInputField() {
-  querySelector("#issue").attributes.remove("disabled");
+  issueInput.attributes.remove("disabled");
 }
 
 /// Disable the Repo Input Field.
 disableRepoInputField() {
-  querySelector("#repo").attributes["disabled"] = "disabled";
+  repoInput.attributes["disabled"] = "disabled";
 }
 
 /// Enables the Repo Input Field.
 enableRepoInputField() {
-  querySelector("#repo").attributes.remove("disabled");
+  repoInput.attributes.remove("disabled");
 }
 
 /// Move focus to the Move button.
 focusMoveButton() {
-  querySelector("#move").focus();
+  moveIssueButton.focus();
 }

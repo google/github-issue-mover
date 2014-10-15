@@ -35,7 +35,7 @@ class OAuthCredentials {
   /// the prod ones.
   static OAuthCredentials loadOauthCredentials({bool dev: false}) {
     OAuthCredentials oauthCredentials = new OAuthCredentials();
-    // Load credetials from yaml file
+    // Load credentials from YAML files.
     String fileName = PROD_CREDENTIALS_FILE_NAME;
     if(dev) {
       fileName = DEV_CREDENTIALS_FILE_NAME;

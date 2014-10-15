@@ -20,6 +20,7 @@ import 'package:forcemvc/force_mvc.dart';
 import 'package:yaml/yaml.dart';
 import 'package:github/server.dart';
 
+
 part 'logic/cookies.dart';
 part 'logic/oauth_credentials.dart';
 part 'controllers/oauth_controller.dart';
@@ -33,7 +34,7 @@ void main() {
   // Create a force HTTP server.
   WebServer server = new WebServer(host: '0.0.0.0',
                                    port: 8080,
-                                   clientFiles: '../build/web/',
+                                   clientFiles: '../web/',
                                    views: './views/');
 
   // Set up logging.

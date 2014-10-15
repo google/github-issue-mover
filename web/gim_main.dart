@@ -42,18 +42,52 @@ String accessToken;
 
 /// Configured [GitHub] Client library accessor. `null` if the user hasn't
 /// Authorized yet.
-GitHub github;
+GitHub gitHub;
 
 // Shortcuts to DOM Elements.
-InputElement issueInput = querySelector("#issue");
-InputElement repoInput = querySelector("#repo");
-UListElement issueDropdown = querySelector("#dropdownIssue");
-UListElement repoDropdown = querySelector("#dropdownRepo");
-ButtonElement moveButton = querySelector("#move");
-ButtonElement closeButton = querySelector("#close");
-ButtonElement authButton = querySelector("#auth_button");
+ButtonElement authButton = querySelector("#authButton");
+DivElement authorizeContainer = querySelector("#authorize");
 
-/// App's entry point
+DivElement signedInUserContainer = querySelector("#user");
+ImageElement signedInUserAvatar = querySelector("#photo");
+AnchorElement signedInUserLogin = querySelector("#login");
+
+DivElement moveIssueForm = querySelector("#moveIssueForm");
+
+ButtonElement moveIssueButton = querySelector("#move");
+DivElement moveResultContainer = querySelector("#moveResultContainer");
+DivElement moveError = querySelector("#moveError");
+AnchorElement newIssueLink = querySelector("#newIssueLink");
+AnchorElement oldIssueLink = querySelector("#oldIssueLink");
+ButtonElement closeMoveWidgetButton = querySelector("#close");
+SpanElement numCommentsMoved = querySelector("#numComments");
+List<SpanElement> checkMarks = querySelectorAll("#moveResultContainer .check");
+SpanElement closeIssueCheckMark = querySelector("#closeIssueCheck");
+SpanElement copyCommentsCheckMark = querySelector("#copyCommentsCheck");
+SpanElement referenceCommentCheckMark = querySelector("#referenceCommentCheck");
+SpanElement copyIssueCheckMark = querySelector("#copyIssueCheck");
+
+InputElement issueInput = querySelector("#issue");
+UListElement issueDropDown = querySelector("#dropdownIssue");
+DivElement issueOverview = querySelector("#issueOverview");
+ImageElement issueOverviewUserAvatar = querySelector("#issueUserAvatar");
+SpanElement issueOverviewBody = querySelector("#issueBody");
+AnchorElement issueOverviewTitle = querySelector("#issueTitle");
+AnchorElement issueOverviewUserName = querySelector("#issueUserName");
+SpanElement issueOverviewComment = querySelector("#issueComments");
+DivElement issueError = querySelector("#issueError");
+
+InputElement repoInput = querySelector("#repo");
+UListElement repoDropDown = querySelector("#dropdownRepo");
+DivElement repoOverview = querySelector("#repoOverview");
+ImageElement repoOverviewUserAvatar = querySelector("#repoUserAvatar");
+SpanElement repoOverviewDescription = querySelector("#repoDescription");
+AnchorElement repoOverviewName = querySelector("#repoName");
+DivElement repoError = querySelector("#repoError");
+
+
+
+/// App's entry point.
 main() {
 
   // Reading the OAuth 2.0 accessToken from the Cookies.
@@ -61,15 +95,15 @@ main() {
       "" ? null : cookie.get('access_token');
 
   // Instantiate the GitHub Accessor if we have an AccessToken.
-  github = accessToken == null ? null : createGitHubClient(
+  gitHub = accessToken == null ? null : createGitHubClient(
       auth: new Authentication.withToken(accessToken));
 
-  // Autosuggest Issue event bindings.
+  // Auto-suggest Issue event bindings.
   issueInput.onFocus.listen((e) => refreshIssueAutoSuggest(e));
   issueInput.onChange.listen((e) => stopAutoSuggest(e));
   issueInput.onKeyUp.listen((e) => refreshIssueAutoSuggest(e));
   issueInput.onBlur.listen((e) => stopAutoSuggest(e));
-  // Autosuggest Repo event bindings.
+  // Auto-suggest Repo event bindings.
   repoInput.onFocus.listen((e) => refreshRepoAutoSuggest(e));
   repoInput.onChange.listen((e) => stopAutoSuggest(e));
   repoInput.onKeyUp.listen((e) => refreshRepoAutoSuggest(e));
@@ -79,11 +113,11 @@ main() {
   repoInput.onChange.listen(onRepoChange);
   authButton.onClick.listen(
       (Event) => window.location.href = "/oauth_redirect");
-  moveButton.onClick.listen((e) => copyIssue());
-  closeButton.onClick.listen((e) => closeMoveResultContainer());
+  moveIssueButton.onClick.listen((e) => copyIssue());
+  closeMoveWidgetButton.onClick.listen((e) => closeMoveResultContainer());
 
   // If the user is authorized we Display the username and show the main panel.
-  if (github != null) {
+  if (gitHub != null) {
     fetchAuthorizedUser();
     displayMoveIssueForm();
     initAutoSuggest();
@@ -118,10 +152,10 @@ onIssueChange([_]) {
     // Gets the issue's details on GitHub.
     RepositorySlug repositorySlug = new RepositorySlug(
         issueUrl.ownerName, issueUrl.repoName);
-    github.issues.get(repositorySlug, int.parse(issueUrl.issueNumber)).then(
+    gitHub.issues.get(repositorySlug, int.parse(issueUrl.issueNumber)).then(
         (Issue issue) {
           enableIssueInputField();
-          if(document.activeElement.parent == dropdown) {
+          if(document.activeElement.parent == dropDown) {
             return;
           }
           issueToMove = issue;
@@ -138,7 +172,7 @@ onIssueChange([_]) {
   }
 }
 
-/// Automatically simplifies the repo input URL if possible and loads the Repo's
+/// Automatically simplifies the repo input URL if possible and loads the repo's
 /// details.
 onRepoChange([_]) {
 
@@ -161,7 +195,7 @@ onRepoChange([_]) {
     disableRepoInputField();
 
     // Get the Repository details from GitHub.
-    github.repositories.getRepository(
+    gitHub.repositories.getRepository(
         new RepositorySlug(repoUrl.ownerName, repoUrl.repoName)).then(
             (Repository repo) {
               destinationRepo = repo;
@@ -182,7 +216,7 @@ onRepoChange([_]) {
 fetchAuthorizedUser() {
   currentGitHubUser = null;
   // Request the currently signed in GitHub user.
-  github.users.getCurrentUser().then((CurrentUser user) {
+  gitHub.users.getCurrentUser().then((CurrentUser user) {
     currentGitHubUser = user;
     displayAuthorizedUser();
   }).catchError((_) => hideAuthorizedUser());
@@ -203,14 +237,14 @@ copyIssue() {
       + "${dateFormat.format(issueToMove.createdAt)}_\n\n${copy.body}\n\n_"
       + "Copied from original issue: ${originalIssueUrl.simplifiedUrl}_";
 
-  github.issues.create(destinationRepo.slug(), copy).then((Issue newIssue) {
+  gitHub.issues.create(destinationRepo.slug(), copy).then((Issue newIssue) {
     markCopiedIssueCreationCompleted();
 
     // Display the link to the new issue.
     displayNewIssueLink(newIssue);
 
     // Fetch all Comments from the original issue.
-    Stream<IssueComment> stream = github.issues.listCommentsByIssue(
+    Stream<IssueComment> stream = gitHub.issues.listCommentsByIssue(
         new RepositorySlug(originalIssueUrl.ownerName,
             originalIssueUrl.repoName), issueToMove.number);
     stream.toList().then((List<IssueComment> comments) {
@@ -227,7 +261,7 @@ copyIssue() {
       });
 
       // Add all comments to the new issue.
-      addCommentsToIssue(github, comments, newIssue, destinationRepo,
+      addCommentsToIssue(gitHub, comments, newIssue, destinationRepo,
           updateNumCommentsCopied).then((_) {
             markCommentsCopyCompleted();
 
@@ -237,12 +271,12 @@ copyIssue() {
                 "This issue was moved to ${newIssueUrl.simplifiedUrl}";
             RepositorySlug originalRepoSlug = new RepositorySlug(
                 originalIssueUrl.ownerName, originalIssueUrl.repoName);
-            github.issues.createComment(originalRepoSlug,
+            gitHub.issues.createComment(originalRepoSlug,
                 issueToMove.number, commentBody).then((_) {
                     markClosingCommentCreationCompleted();
                     IssueRequest request = new IssueRequest();
                     request.state = "closed";
-                    github.issues.edit(originalRepoSlug, issueToMove.number,
+                    gitHub.issues.edit(originalRepoSlug, issueToMove.number,
                         request).then((_) {
                           markOriginalIssueClosedCompleted();
                           moveFocusToCloseButton();

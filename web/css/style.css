@@ -11,7 +11,7 @@
   }
   a {
     color: black;
-    text-decoration: none;  
+    text-decoration: none;
   }
   body {
     background-color: white;
@@ -50,10 +50,10 @@
     margin-top: -65px;
     margin-left: -50px;
     margin-right: 30px;
-    transform: scaleX(-1);
+    transmoveIssueForm: scaleX(-1);
     z-index: 1000;
   }
-  
+
   #explanation {
     z-index: 100;
     background-color: #D88843;
@@ -65,7 +65,7 @@
     font-family: 'Coming Soon', cursive;
     position: relative;
   }
-  
+
   .help {
     font-size: 12px;
     color: #aaa;
@@ -91,14 +91,14 @@
     font-size: 20px;
     padding: 50px 30px 150px 70px;
   }
-  #auth_button {
+  #authButton {
     margin-top: 20px;
   }
-  #auth_error {
+  #authError {
     color: red;
     padding-top: 20px;
   }
-  #form {
+  #moveIssueForm {
     display: none;
     font-size: 20px;
     padding-bottom: 67px;
@@ -240,7 +240,7 @@
     overflow-y: scroll;
     white-space: nowrap;
   }
-  
+
   .dropdown > li {
     display: block;
     padding: 5px 10px;
@@ -306,12 +306,12 @@
     margin-left: 10px;
   }
   #arrow {
-      transform: rotate(90deg);
-      color: green;
-      width: 15px;
-      font-size: 40px;
-      margin-left: auto;
-      margin-right: auto;
+    transform: rotate(90deg);
+    color: green;
+    width: 15px;
+    font-size: 40px;
+    margin-left: auto;
+    margin-right: auto;
   }
   #move_result {
     text-align: center;
@@ -341,8 +341,25 @@
     text-align: center;
   }
   #footer a {
-    margin: 0 20px;
+    margin: 0 15px;
     color: inherit;
+    background-repeat: no-repeat;
+    background-size: 15px;
+    background-position: 0 1px;
+    padding-left: 25px;
+  }
+  #footer #dart-footer {
+    background-image: url('/images/dart-logo.png');
+  }
+  #footer #googleplus-footer {
+    background-image: url('/images/googleplus-logo.png');
+  }
+  #footer #github-footer {
+    background-image: url('/images/github-logo.png');
+  }
+  #footer #appengine-footer {
+    background-image: url('/images/appengine-logo.png');
+    background-size: 17px;
   }
 
   /* ===== Buttons ====== */
@@ -361,7 +378,7 @@
   .pure-button-hover,
   .pure-button:hover,
   .pure-button:focus {
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+    filter: progid:DXImageTransmoveIssueForm.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
     background-image: -webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(40%,rgba(0,0,0,.05)),to(rgba(0,0,0,.1)));
     background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
     background-image: -moz-linear-gradient(top,rgba(0,0,0,.05) 0,rgba(0,0,0,.1));
@@ -371,7 +388,7 @@
   .pure-button[disabled], .pure-button-disabled, .pure-button-disabled:hover, .pure-button-disabled:focus, .pure-button-disabled:active {
     border: 0;
     background-image: none;
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    filter: progid:DXImageTransmoveIssueForm.Microsoft.gradient(enabled=false);
     filter: alpha(opacity=40);
     -khtml-opacity: .4;
     -moz-opacity: .4;
@@ -407,7 +424,7 @@
 }
 
 /* Overrides for mobile devices */
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 1000px) {
   #issueOverview,
   #repoOverview {
     margin-bottom: -60px;
@@ -462,30 +479,18 @@
     height: 30px;
     white-space: nowrap;
     margin-bottom: -8px;
+    background-size: 30px;
+    padding-left: 0;
   }
-  #dart-footer {
-    background-image: url('/images/dart-logo.png');
-    background-repeat: no-repeat;
-    background-size: 30px 30px;
-  }
-  #googleplus-footer {
-    background-image: url('/images/googleplus-logo.png');
-    background-repeat: no-repeat;
-    background-size: 30px 30px;
-  }
-  #github-footer {
-    background-image: url('/images/github-logo.png');
-    background-repeat: no-repeat;
-    background-size: 30px 30px;
-  }
-  #appengine-footer {
-    background-image: url('/images/appengine-logo.png');
-    background-repeat: no-repeat;
+  #footer #appengine-footer {
     background-size: 33px;
     padding-right: 3px;
     background-position: 0 3px;
   }
-  #form {
+  #footer #github-footer {
+    background-size: 29px;
+  }
+  #moveIssueForm {
     padding: 20px 20px 45px 20px;
     margin-top: 0;
     box-sizing: border-box;
@@ -507,7 +512,7 @@
     padding: 20px 20px 70px 20px;
     line-height: 28px;
   }
-  #auth_button {
+  #authButton {
     margin-top: 10px;
   }
   body {
