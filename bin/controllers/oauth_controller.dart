@@ -21,10 +21,10 @@ class OAuthController {
   /// Relative path to the Exchange code callback URL.
   static const String exchangeCodePath = "/exchange_code";
 
-  /// Scope we need access to.
-  static final List<String> SCOPES = ["repo"];
+  /// GitHub scopes we need access to.
+  static final List<String> GITHUB_SCOPES = ["repo"];
 
-  /// OAuth flow.
+  /// OAuth flow Object.
   OAuth2Flow _oauthFlow;
 
   /// Redirects the user to the GitHub API authorization page.
@@ -115,7 +115,7 @@ class OAuthController {
       _oauthFlow = new OAuth2Flow(credentials.clientId,
           credentials.clientSecret,
           redirectUri: getRedirectUrl(requestedUri),
-          scopes: SCOPES);
+          scopes: GITHUB_SCOPES);
     }
     return _oauthFlow;
   }

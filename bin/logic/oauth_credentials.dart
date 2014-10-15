@@ -17,16 +17,16 @@ part of github_issue_mover;
 /// Loads the OAuth credentials.
 class OAuthCredentials {
 
-  /// Name fo the file containing the prod OAuth 2.0 app's credentials
+  /// Name fo the file containing the prod OAuth 2.0 application's credentials.
   static final String PROD_CREDENTIALS_FILE_NAME = "credentials.yaml";
 
-  /// Name fo the file containing the dev OAuth 2.0 app's credentials
+  /// Name fo the file containing the dev OAuth 2.0 application's credentials.
   static final String DEV_CREDENTIALS_FILE_NAME = "credentials_dev.yaml";
 
-  /// Loaded Client ID
+  /// Loaded Client ID.
   String clientId;
 
-  /// Loaded Client Secret
+  /// Loaded Client Secret.
   String clientSecret;
 
   /// Reads the [OAuthCredentials] available on file.
