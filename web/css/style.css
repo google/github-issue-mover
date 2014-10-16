@@ -50,7 +50,7 @@
     margin-top: -65px;
     margin-left: -50px;
     margin-right: 30px;
-    transmoveIssueForm: scaleX(-1);
+    transform: scaleX(-1);
     z-index: 1000;
   }
 
@@ -378,7 +378,7 @@
   .pure-button-hover,
   .pure-button:hover,
   .pure-button:focus {
-    filter: progid:DXImageTransmoveIssueForm.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
     background-image: -webkit-gradient(linear,0 0,0 100%,from(transparent),color-stop(40%,rgba(0,0,0,.05)),to(rgba(0,0,0,.1)));
     background-image: -webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
     background-image: -moz-linear-gradient(top,rgba(0,0,0,.05) 0,rgba(0,0,0,.1));
@@ -388,7 +388,7 @@
   .pure-button[disabled], .pure-button-disabled, .pure-button-disabled:hover, .pure-button-disabled:focus, .pure-button-disabled:active {
     border: 0;
     background-image: none;
-    filter: progid:DXImageTransmoveIssueForm.Microsoft.gradient(enabled=false);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
     filter: alpha(opacity=40);
     -khtml-opacity: .4;
     -moz-opacity: .4;
