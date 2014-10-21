@@ -1,0 +1,20 @@
+name: github-issue-mover
+description: Issue Mover for Github
+dependencies:
+  forcemvc: '>=0.5.3 <1.0.0'
+  http: '>=0.9.0 <0.10.0'
+  http_server: '>=0.9.0 <0.10.0'
+  logging: '>=0.9.0 <0.10.0'
+  yaml: '>=0.9.0 <0.10.0'
+  browser: any
+  cookie: ">=0.0.4 <0.1.0"
+  intl: any
+  markdown: ">=0.7.0 <0.8.0"
+  # Since I fixed a couple issues and it's not yet on pub have to refer to this
+  # version of the lib from GitHub.
+  github:
+    git:
+      url: https://github.com/DirectMyFile/github.dart
+      ref: cec9874e9e0059cf6ffa71db9aba03e90d4025d3
+dev_dependencies:
+  unittest: '>=0.10.0'

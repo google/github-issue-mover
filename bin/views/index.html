@@ -1,0 +1,133 @@
+<!-- Copyright 2014 Google Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License -->
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Issue Mover for GitHub</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Issue Mover for GitHub allows you to move GitHub Issues to a different repo." />
+    <meta name="keywords" content="OAuth, REST, Google, POST, GET, PUT, token, client id, client secret" />
+
+    <!-- Style sheets -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Coming+Soon" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-25993200-8', 'auto');
+      ga('require', 'displayfeatures');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <div id=top>
+      <img src="/images/ladybug.png" id="logo">
+      <span>Issue Mover for GitHub</span>
+      <div id="user">
+        <img id="photo">
+        <a id="login" target="_blank"></a>
+        <a id="logout" href="/logout">logout</a>
+      </div>
+    </div>
+
+    <div id="explanation">
+      Making it easy to migrate issues between GitHub repos:
+      <ul>
+        <li>Copy the issue in the destination repo
+        <li>Add references between the issues
+        <li>Close the original issue
+      </ul>
+      <img id="lots_ladybug" src="/images/lots_ladybug_dark2.png">
+    </div>
+
+    <div id="authorize">First you need to allow us to use the GitHub API:
+      <div id="authError">{{error}}</div>
+      <button class="pure-button" id="authButton">Authorize GitHub</button>
+    </div>
+
+    <div id="moveIssueForm">
+      <div id="issueSection">
+        Issue to move <br />
+        <input type="text" name="issue" id="issue" placeholder="owner/repo#num" tabindex="1">
+        <ul class="dropdown" id="dropdownIssue"></ul>
+        <div id="issueError"></div>
+        <div id="issueOverview">
+          <div id="issueUser"><img id="issueUserAvatar"><a target="_blank" id="issueUserName"></a></div>
+          <a id="issueTitle" target="_blank"></a>
+          <span id="issueBody"></span>
+          <span id="issueComments"></span>
+        </div>
+        <div class="help">You can paste full GitHub URLs too!</br>e.g. https://github.com/nicolasgarnier/github-issue-mover/issues/4</div>
+      </div>
+
+      <div id="repoSection">
+        Destination repo <br />
+        <input type="text" name="repo" id="repo" placeholder="owner/repo" tabindex="2">
+        <ul class="dropdown" id="dropdownRepo"></ul>
+        <div id="repoError"></div>
+        <div id="repoOverview">
+          <a id="repoName" target="_blank"></a>
+          <div id="repoDescription"></div>
+        </div>
+        <div class="help">You can paste full GitHub URLs too!</br>e.g. https://github.com/nicolasgarnier/github-issue-mover</div>
+      </div>
+
+      <div id="moveSection">
+        <button class="pure-button" id="move" disabled="disabled" tabindex="3">Move issue!</button>
+      </div>
+    </div>
+
+    <div id="moveResultContainer">
+      <div id="overlay"></div>
+      <div id="content"><h2>Moving Issue:</h2>
+      Copy issue in destination repo <span class="box">&#x2610;</span>
+      <span id="copyIssueCheck" class="check">&#x2713;</span><br />
+      Copy comments in new issue <span id="numComments"></span><span class="box">&#x2610;</span>
+      <span id="copyCommentsCheck" class="check">&#x2713;</span><br />
+      Reference new issue in original issue <span class="box">&#x2610;</span>
+      <span id="referenceCommentCheck" class="check">&#x2713;</span><br />
+      Close original issue <span class="box">&#x2610;</span>
+      <span id="closeIssueCheck" class="check">&#x2713;</span><br /><br />
+      <div id="move_result">
+        <a id="oldIssueLink" target="_blank"></a>
+        <div id="arrow">&#x27a7;</div>
+        <a id="newIssueLink" target="_blank"></a>
+      </div>
+      <div id="moveError"></div>
+      <button class="pure-button" id="close" disabled="disabled" tabindex="4">Close</button>
+      </div>
+    </div>
+
+    <div id="footer">
+      <a target="_blank" id="github-footer" href="https://github.com/google/github-issue-mover">View code on GitHub</a>
+      |
+      <a target="_blank" id="dart-footer" href="https://www.dartlang.org">Written in Dart</a>
+      |
+      <a target="_blank" id="appengine-footer" href="https://cloud.google.com/appengine/docs/managed-vms/">Hosted on Google App Engine</a>
+      |
+      <a target="_blank" id="googleplus-footer" href="https://plus.google.com/+GithubIssueMoverDart" rel="publisher">Follow us on Google+</a>
+    </div>
+
+    <!-- Scripts -->
+    <script async type="application/dart" src="/gim_main.dart"></script>
+    <script async src="/packages/browser/dart.js"></script>
+  </body>
+</html>

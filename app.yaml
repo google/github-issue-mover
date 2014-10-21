@@ -1,0 +1,13 @@
+# Below for App Engine
+version: 1
+runtime: custom
+api_version: 1
+threadsafe: true
+vm: true
+vm_health_check:
+  enable_health_check: false
+
+handlers:
+  - url: /.*
+    script: dynamic
+    secure: always
