@@ -32,9 +32,6 @@ const Symbol OWNER_MODE = #OWNER;
 /// Used to set auto-completion on Repositories.
 const Symbol REPO_MODE = #REPO;
 
-/// Cache of all owners (username and organizations) the user has repositories
-/// into.
-List<String> ownersList = new List<String>();
 /// Cache of all repositories mapped by owners.
 Map<String, List<Repository>> repositoriesList =
     new Map<String, List<Repository>>();
@@ -65,38 +62,36 @@ initAutoSuggest() {
   });
 
   // Build the index of all owners and repositories the user has access to.
-  gitHub.repositories.listRepositories().toList().then(
-      (List<Repository> repos) {
-        Map<String, bool> uniqueOwnersList = new Map<String, bool>();
-        repos.forEach((Repository repo) {
-          uniqueOwnersList[repo.owner.login] = true;
-          _addRepoToCache(repo);
-        });
-        ownersList.addAll(uniqueOwnersList.keys);
+  gitHub.repositories.listRepositories().listen(
+      (Repository repository) {
+        _addRepoToCache(repository);
         refreshAutoSuggest();
       });
-  // List all organizations the user is a member of. Fetch repositories for each
-  // organizations.
-  gitHub.organizations.list().toList().then(
-      (List<Organization> orgs) {
-        orgs.forEach((Organization org) {
-          ownersList.add(org.login);
+  // List all organizations the user is a member of and list all repositories
+  // for each organizations.
+  gitHub.organizations.list().listen(
+      (Organization org) {
+          _addOwnerToCache(org.login);
           refreshAutoSuggest();
           gitHub.repositories.listUserRepositories(org.login).toList().then(
-            (List<Repository> repos) {
-              repos.forEach((Repository repo) => _addRepoToCache(repo));
+            (List<Repository> repositories) {
+              repositories.forEach((Repository repo) => _addRepoToCache(repo));
               refreshAutoSuggest();
             });
       });
-  });
 }
 
 /// Adds the given [repo] to the cache.
 _addRepoToCache(Repository repo) {
-  if(repositoriesList[repo.owner.login] == null) {
-    repositoriesList[repo.owner.login] = new List<Repository>();
-  }
+  _addOwnerToCache(repo.owner.login);
   repositoriesList[repo.owner.login].add(repo);
+}
+
+/// Adds the given [ownerName] to the cache.
+_addOwnerToCache(String ownerName) {
+  if(repositoriesList[ownerName] == null) {
+    repositoriesList[ownerName] = new List<Repository>();
+  }
 }
 
 /// Setup the auto-completion module to be used on the Issue Input field.
@@ -122,38 +117,47 @@ displayDropDown([_]) => dropDown.style.display = "block";
 /// Refreshes the list of suggestions based on the user input and what's in the
 /// cache.
 refreshAutoSuggest([e]) {
+  // Don't refresh if the focus is not inside the drop down or the input
+  // elements.
   if(document.activeElement.parent != dropDown
       && document.activeElement != activeInput) {
     return false;
   }
+
+  // Make sure the Drop down is visible.
   displayDropDown();
+
+  // If the key press is the down arrow (vs. typing a new letter) we move the
+  // focus to the first element of the drop down and do not refresh.
   if(e != null && e is KeyboardEvent && e.keyCode == KeyCode.DOWN) {
     (dropDown.firstChild as LIElement).focus();
-    // don't display errors for the issue.
+    // don't display errors for the issue since moving the focus out of the
+    // input may trigger on onChange event.
     querySelector("#issueError").style.display = "none";
     return false;
   }
-  String input = activeInput.value;
+
+  String inputValue = activeInput.value;
 
   // User is typing the owner name.
-  if(!input.contains("/")) {
+  if(!inputValue.contains("/")) {
     // Filter owner based on prefix.
     List<String> matchingOwner = new List<String>()
-        ..addAll(ownersList)
-        ..retainWhere((String owner) => owner.startsWith(input));
+        ..addAll(repositoriesList.keys)
+        ..retainWhere((String owner) => owner.startsWith(inputValue));
     _setAutoSuggestList(owners: matchingOwner..sort());
 
   // User is typing the repo name.
-  } else if(!input.contains("#")) {
+  } else if(!inputValue.contains("#")) {
     // Filter repo based on prefix and if the repo has any issues.
-    List<Repository> ownerRepositories = repositoriesList[input.split("/")[0]];
+    List<Repository> ownerRepositories = repositoriesList[inputValue.split("/")[0]];
     if(ownerRepositories != null) {
-      List<Repository> matchingRepos = new List<Repository>()
+      List<Repository> matchingRepositories = new List<Repository>()
           ..addAll(ownerRepositories)
-          ..retainWhere((Repository repo) => repo.fullName.startsWith(input)
+          ..retainWhere((Repository repo) => repo.fullName.startsWith(inputValue)
               && repo.hasIssues
               && (repo.openIssuesCount > 0 || mode == REPO_MODE));
-      _setAutoSuggestList(repositories: matchingRepos);
+      _setAutoSuggestList(repositories: matchingRepositories);
     } else {
       dropDown.children.clear();
       stopAutoSuggest();
@@ -162,23 +166,32 @@ refreshAutoSuggest([e]) {
   // User is typing the issue number.
   } else {
     // Fetch Issues of the typed repo.
-    GitHubUrl url = GitHubUrl.parse(input);
+    GitHubUrl url = GitHubUrl.parse(inputValue);
+
+    // Check in the cache if we already fetched the issues.
     List<Issue> issues = issuesCache["${url.ownerName}/${url.repoName}"];
+
+    // If we don't have the issues in the cache we'll fetch them using the
+    // GitHub API.
     if (issues == null) {
+
+      // Create a new empty cache entry.
       issues  = new List<Issue>();
       issuesCache["${url.ownerName}/${url.repoName}"] = issues;
-        Stream<Issue> issuesStream = gitHub.issues.listByRepo(
-            new RepositorySlug(url.ownerName, url.repoName));
-        issuesStream.listen((Issue issue){
-          if (!issue.htmlUrl.contains("\/pull\/")) {
-            issues.add(issue);
-            List<Issue> matchingIssues = new List<Issue>()
-              ..addAll(issues)
-              ..retainWhere((Issue issue) =>"${issue.number}".startsWith(
-                  url.issueNumber == null ? "" : url.issueNumber));
-            _setAutoSuggestList(issues: matchingIssues);
-          }
-        });
+
+      // Fetch the repo's issues using the GitHub API.
+      gitHub.issues.listByRepo(new RepositorySlug(url.ownerName, url.repoName))
+          .listen((Issue issue){
+              // Filter out Pull requests which are returned as issues.
+              if (!issue.htmlUrl.contains("\/pull\/")) {
+                issues.add(issue);
+                List<Issue> matchingIssues = new List<Issue>()
+                  ..addAll(issues)
+                  ..retainWhere((Issue issue) =>"${issue.number}".startsWith(
+                      url.issueNumber == null ? "" : url.issueNumber));
+                _setAutoSuggestList(issues: matchingIssues);
+              }
+            });
     }
     List<Issue> matchingIssues = new List<Issue>()
              ..addAll(issues)
@@ -194,18 +207,26 @@ refreshAutoSuggest([e]) {
 /// Only one list of item must be specified
 _setAutoSuggestList({List<String> owners, List<Repository> repositories,
     List<Issue> issues}) {
+
+  // Since we'll delete all children and re-create them we save what element had
+  // the focus to re-apply it.
   String selectedElementText;
   if (document.activeElement.parent == dropDown) {
     selectedElementText = document.activeElement.attributes["value"];
   }
+
+  // Naive implementation for now we just delete all children and re-create all
+  // new children.
   dropDown.children.clear();
   if(owners != null) {
     owners.forEach((String owner) {
       String info = "... repositories";
-      if (repositoriesList[owner] != null) {
+      if (repositoriesList[owner].length != 0) {
         info = "${repositoriesList[owner].length} repositories";
       }
-      LIElement elem = _createDropDownElement("$owner/", info,
+      LIElement elem = _createDropDownElement(
+          owner + (mode == OWNER_MODE ? "" : "/"),
+          info,
           isFinalValue: mode == OWNER_MODE);
       dropDown.children.add(elem);
     });
@@ -226,6 +247,7 @@ _setAutoSuggestList({List<String> owners, List<Repository> repositories,
       dropDown.children.add(elem);
     });
   }
+
   // Re-apply focus if we currently had to refresh while the user was browsing
   // the drop-down list.
   if(selectedElementText != null) {
@@ -291,6 +313,9 @@ selectDropDownItem(e) {
   activeInput.value = dropDownItem.attributes["value"];
   activeInput.focus();
   e.stopImmediatePropagation();
+
+  // If this is a final/correct value for the auto-suggest we trigger the
+  // onChange event of the input field.
   if (dropDownItem.attributes["finalValue"] == "true"){
     activeInput.dispatchEvent(new CustomEvent("change"));
   }
