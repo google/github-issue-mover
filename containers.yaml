@@ -1,8 +1,0 @@
-version: v1
-containers:
-  - name: github-issue-mover
-    image: nicolasgarnier/github-issue-mover
-    ports:
-      - name: http
-        hostPort: 80
-        containerPort: 8080
