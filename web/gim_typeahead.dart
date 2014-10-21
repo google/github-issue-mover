@@ -290,17 +290,16 @@ dropDownElemKeyPress(KeyEvent e) {
     e.preventDefault();
   } else if (e.keyCode == KeyCode.ESC) {
     activeInput.focus();
-    stopAutoSuggest();
     e.preventDefault();
-  } else  if (e.keyCode == KeyCode.DOWN
+  } else if (e.keyCode == KeyCode.DOWN
       && dropDownItem.nextElementSibling != null) {
     dropDownItem.nextElementSibling.focus();
     e.preventDefault();
-  } else  if (e.keyCode == KeyCode.UP
+  } else if (e.keyCode == KeyCode.UP
       && dropDownItem.previousElementSibling == null) {
     activeInput.focus();
     e.preventDefault();
-  } else  if (e.keyCode == KeyCode.UP) {
+  } else if (e.keyCode == KeyCode.UP) {
     dropDownItem.previousElementSibling.focus();
     e.preventDefault();
   }
