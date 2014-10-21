@@ -86,7 +86,6 @@ AnchorElement repoOverviewName = querySelector("#repoName");
 DivElement repoError = querySelector("#repoError");
 
 
-
 /// App's entry point.
 main() {
 
