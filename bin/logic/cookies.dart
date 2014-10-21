@@ -68,3 +68,42 @@ class CookiesHelper {
     }
   }
 }
+
+/// Manages reading and writing of Cookies to the HTTP response.
+class CookieManager {
+
+  // Adds the given [accessToken] to the [request]'s response as a [Cookie].
+  static addAccessTokenCookie(HttpRequest request, String accessToken) {
+    request.response.cookies.add(
+        CookiesHelper.createAccessTokenCookie(accessToken));
+  }
+
+  // Adds the given [error] to the [request]'s response as a [Cookie].
+  static addErrorCookie(HttpRequest request, String error) {
+    request.response.cookies.add(
+        CookiesHelper.createErrorCookie("$error"));
+  }
+
+  // Removes the [Cookie] containing the Access Token from the [request]'s
+  // response.
+  static removeAccessTokenCookie(HttpRequest request) {
+    request.response.cookies.add(
+        CookiesHelper.createExpiredAccessTokenCookie());
+  }
+
+  // Removes the [Cookie] containing the Error from the [request]'s response.
+  static removeErrorCookie(HttpRequest request) {
+    request.response.cookies.add(
+        CookiesHelper.createExpiredErrorCookie());
+  }
+
+  // Returns the value of the error contained in the error [Cookie] that's in
+  // the [request].
+  static String getErrorFromCookie(HttpRequest request) {
+    Cookie errorCookie = CookiesHelper.getErrorCookie(request);
+    if (errorCookie == null) {
+      return null;
+    }
+    return errorCookie.value.replaceAll("_", " ");
+  }
+}

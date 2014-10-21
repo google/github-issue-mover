@@ -41,11 +41,10 @@ class OAuthController {
   String showPage(ForceRequest req, Model model) {
     // If an error cookie is being passed along we delete it and we inject the
     // error message in the view
-    Cookie errorCookie = CookiesHelper.getErrorCookie(req.request);
-    if (errorCookie != null) {
-      req.request.response.cookies.add(CookiesHelper
-          .createExpiredErrorCookie());
-      model.addAttribute("error", errorCookie.value.replaceAll("_", " "));
+    String errorFromCookie = getErrorFromCookie(req.request);
+    if (errorFromCookie != null) {
+      model.addAttribute("error", errorFromCookie);
+      CookieManager.removeErrorCookie(req.request);
     }
     return "index";
   }
@@ -55,11 +54,9 @@ class OAuthController {
   String logout(ForceRequest req, Model model,
                 @RequestParam() String error_message) {
     if(error_message != "") {
-      req.request.response.cookies.add(
-          CookiesHelper.createErrorCookie(error_message));
+      CookieManager.addErrorCookie(req.request, error_message);
     }
-    req.request.response.cookies.add(
-        CookiesHelper.createExpiredAccessTokenCookie());
+    CookieManager.removeAccessTokenCookie(req.request);
     return "redirect:/";
   }
 
@@ -68,27 +65,17 @@ class OAuthController {
   dynamic oauthCallback(ForceRequest req, Model model, @RequestParam() String
       code, @RequestParam() String error) {
     if (error != null && error == "") {
-      req.request.response.cookies.add(
-          CookiesHelper.createErrorCookie(error));
-      req.request.response.cookies.add(
-          CookiesHelper.createExpiredAccessTokenCookie());
+      CookieManager.addErrorCookie(req.request, error);
+      CookieManager.removeAccessTokenCookie(req.request);
       return "redirect:/";
     } else {
       getOauthGitHubHelper(req.request.requestedUri).exchange(code)
           .then((ExchangeResponse response) {
-            req.request.response.cookies.add(
-                CookiesHelper.createAccessTokenCookie(response.token));
+            CookieManager.addAccessTokenCookie(req.request, response.token);
             req.async("redirect:/");
           }).catchError((error) {
-            if (error is String) {
-              req.request.response.cookies.add(
-                  CookiesHelper.createErrorCookie(error));
-            } else {
-              req.request.response.cookies.add(
-                  CookiesHelper.createErrorCookie("$error"));
-            }
-            req.request.response.cookies.add(
-                CookiesHelper.createExpiredAccessTokenCookie());
+            CookieManager.addErrorCookie(req.request, error);
+            CookieManager.removeAccessTokenCookie(req.request);
             req.async("redirect:/");
           });
       return req.asyncFuture;
