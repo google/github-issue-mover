@@ -41,7 +41,7 @@ class OAuthController {
   String showPage(ForceRequest req, Model model) {
     // If an error cookie is being passed along we delete it and we inject the
     // error message in the view
-    String errorFromCookie = getErrorFromCookie(req.request);
+    String errorFromCookie = CookieManager.getErrorFromCookie(req.request);
     if (errorFromCookie != null) {
       model.addAttribute("error", errorFromCookie);
       CookieManager.removeErrorCookie(req.request);
