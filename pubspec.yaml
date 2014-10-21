@@ -10,11 +10,6 @@ dependencies:
   cookie: ">=0.0.4 <0.1.0"
   intl: any
   markdown: ">=0.7.0 <0.8.0"
-  # Since I fixed a couple issues and it's not yet on pub have to refer to this
-  # version of the lib from GitHub.
-  github:
-    git:
-      url: https://github.com/DirectMyFile/github.dart
-      ref: cec9874e9e0059cf6ffa71db9aba03e90d4025d3
+  github: ">=2.1.2 <3.0.0"
 dev_dependencies:
   unittest: '>=0.10.0'
