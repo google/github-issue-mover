@@ -12,9 +12,6 @@
 FROM google/dart
 MAINTAINER Nicolas Garnier <nivco@google.com>
 
-RUN apt-get update
-RUN apt-get install -y wget git-core
-
 WORKDIR /app
 
 ADD pubspec.yaml /app/
@@ -25,7 +22,6 @@ RUN pub build
 
 ADD bin /app/bin
 RUN pub get
-
 
 WORKDIR /app/bin
 CMD []
