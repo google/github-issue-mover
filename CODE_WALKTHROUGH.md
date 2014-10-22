@@ -120,7 +120,7 @@ docker pull google/docker-registry
 Install the **gcloud SDK and Tools** at [cloud.google.com/sdk/](https://cloud.google.com/sdk/) then run:
 
 ```
-gcloud components update appengine-managed-vms
+gcloud components update app-engine-managed-vms
 gcloud auth login
 gcloud config set project <project_name>
 gcloud preview app setup-managed-vms
