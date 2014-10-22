@@ -6,16 +6,10 @@ dependencies:
   http_server: '>=0.9.0 <0.10.0'
   logging: '>=0.9.0 <0.10.0'
   yaml: '>=0.9.0 <0.10.0'
-  github:
-    git:
-      url: https://github.com/DirectMyFile/github.dart
-      ref: cec9874e9e0059cf6ffa71db9aba03e90d4025d3
   browser: any
   cookie: ">=0.0.4 <0.1.0"
   intl: any
   markdown: ">=0.7.0 <0.8.0"
-  sass: any
-transformers:
-  - sass
+  github: ">=2.1.2 <3.0.0"
 dev_dependencies:
   unittest: '>=0.10.0'
