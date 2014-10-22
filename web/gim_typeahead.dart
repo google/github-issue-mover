@@ -215,8 +215,8 @@ _setAutoSuggestList({List<String> owners, List<Repository> repositories,
     selectedElementText = document.activeElement.attributes["value"];
   }
 
-  // Naive implementation for now we just delete all children and re-create all
-  // new children.
+  // Naive implementation for now we just delete all existing auto-suggest
+  // entries and re-create all new entries.
   dropDown.children.clear();
   if(owners != null) {
     owners.forEach((String owner) {
