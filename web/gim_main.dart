@@ -17,7 +17,7 @@ library githubissuemover;
 
 import 'dart:html';
 import 'dart:async';
-import 'githubhelper.dart';
+import 'github_helper.dart';
 import 'package:cookie/cookie.dart' as cookie;
 import 'package:intl/intl.dart';
 import 'package:github/browser.dart';
