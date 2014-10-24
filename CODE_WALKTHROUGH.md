@@ -123,5 +123,4 @@ Install the **gcloud SDK and Tools** at [cloud.google.com/sdk/](https://cloud.go
 gcloud components update app-engine-managed-vms
 gcloud auth login
 gcloud config set project <project_name>
-gcloud preview app setup-managed-vms
 ```
