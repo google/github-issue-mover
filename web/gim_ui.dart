@@ -1,16 +1,16 @@
-/// Copyright 2014 Google Inc. All rights reserved.
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License
 
 /// Contains all the UI related actions.
 part of githubissuemover;
@@ -116,9 +116,7 @@ displayAuthorizedUser() {
 }
 
 /// Hides information about the currently authorized GitHub [User].
-hideAuthorizedUser() {
-  signedInUserContainer.style.display = "none";
-}
+hideAuthorizedUser() => signedInUserContainer.style.display = "none";
 
 /// Close the move details container and re-initializes it for next use.
 closeMoveResultContainer() {
@@ -161,41 +159,35 @@ initMoveContainer() {
   moveResultContainer.style.display = "block";
 }
 
-/// Marks the task as done, enables the "Close" button and moves the focus on it.
-markOriginalIssueClosedCompleted() {
-  closeIssueCheckMark.style.visibility = "visible";
-}
+/// Marks the Original Issue closing task as completed.
+markOriginalIssueClosedCompleted() =>
+    closeIssueCheckMark.style.visibility = "visible";
 
-/// Moves the focus to the Close Move Widget button.
+/// Enables and moves the focus to the Close Move Widget button.
 moveFocusToCloseButton() {
   closeMoveWidgetButton.attributes.remove("disabled");
   closeMoveWidgetButton.focus();
 }
 
-/// Marks the Comments copy as completed.
-markCommentsCopyCompleted() {
-  copyCommentsCheckMark.style.visibility = "visible";
-}
+/// Marks the Comments copy task as completed.
+markCommentsCopyCompleted() =>
+    copyCommentsCheckMark.style.visibility = "visible";
 
 /// Marks the closing comment creation task as completed.
-markClosingCommentCreationCompleted() {
-  referenceCommentCheckMark.style.visibility = "visible";
-}
+markClosingCommentCreationCompleted() =>
+    referenceCommentCheckMark.style.visibility = "visible";
 
 /// Updates the number of Comments that have been copied.
-updateNumCommentsCopied(int num, int total){
-  numCommentsMoved.text = "$num/$total";
-}
+updateNumCommentsCopied(int num, int total) =>
+    numCommentsMoved.text = "$num/$total";
 
 /// Initializes the Comments copy counter.
-initCommentsCounter(int commentsListLength){
-  numCommentsMoved.text = "0/${commentsListLength}";
-}
+initCommentsCounter(int commentsListLength) =>
+    numCommentsMoved.text = "0/${commentsListLength}";
 
 /// Marks the Creation of the copied Issue completed.
-markCopiedIssueCreationCompleted(){
-  copyIssueCheckMark.style.visibility = "visible";
-}
+markCopiedIssueCreationCompleted() =>
+    copyIssueCheckMark.style.visibility = "visible";
 
 /// Display the link to the new issue.
 displayNewIssueLink(Issue newIssue) {
@@ -238,26 +230,16 @@ initRepoInput(GitHubUrl issueUrl) {
 }
 
 /// Disable the Issue Input Field.
-disableIssueInputField() {
-  issueInput.attributes["disabled"] = "disabled";
-}
+disableIssueInputField() => issueInput.attributes["disabled"] = "disabled";
 
 /// Enables the Issue Input Field.
-enableIssueInputField() {
-  issueInput.attributes.remove("disabled");
-}
+enableIssueInputField() => issueInput.attributes.remove("disabled");
 
 /// Disable the Repo Input Field.
-disableRepoInputField() {
-  repoInput.attributes["disabled"] = "disabled";
-}
+disableRepoInputField() => repoInput.attributes["disabled"] = "disabled";
 
 /// Enables the Repo Input Field.
-enableRepoInputField() {
-  repoInput.attributes.remove("disabled");
-}
+enableRepoInputField() => repoInput.attributes.remove("disabled");
 
 /// Move focus to the Move button.
-focusMoveButton() {
-  moveIssueButton.focus();
-}
+focusMoveButton() => moveIssueButton.focus();

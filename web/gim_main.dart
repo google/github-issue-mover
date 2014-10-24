@@ -1,16 +1,16 @@
-/// Copyright 2014 Google Inc. All rights reserved.
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License
 
 /// Contains initialization, bindings and logic for the GitHub Issue Mover tool.
 library githubissuemover;
@@ -87,7 +87,7 @@ DivElement repoError = querySelector("#repoError");
 
 
 /// App's entry point.
-main() {
+void main() {
 
   // Reading the OAuth 2.0 accessToken from the Cookies.
   accessToken = cookie.get('access_token') ==
@@ -125,7 +125,7 @@ main() {
 
 /// Automatically simplifies the issue input URL and loads the issue's details
 /// if possible.
-onIssueChange([_]) {
+void onIssueChange([_]) {
 
   // Make sure we disable the move button while processing this.
   issueToMove = null;
@@ -173,7 +173,7 @@ onIssueChange([_]) {
 
 /// Automatically simplifies the repo input URL if possible and loads the repo's
 /// details.
-onRepoChange([_]) {
+void onRepoChange([_]) {
 
   // Make sure we disable the move button while processing this.
   destinationRepo = null;
@@ -212,7 +212,7 @@ onRepoChange([_]) {
 }
 
 /// Fetches and displays information about the currently Authorized user.
-fetchAuthorizedUser() {
+void fetchAuthorizedUser() {
   currentGitHubUser = null;
   // Request the currently signed in GitHub user.
   gitHub.users.getCurrentUser().then((CurrentUser user) {
@@ -222,7 +222,7 @@ fetchAuthorizedUser() {
 }
 
 /// Starts the copy of the issue.
-copyIssue() {
+void copyIssue() {
   // Display the move details container.
   initMoveContainer();
 

@@ -1,16 +1,16 @@
-/// Copyright 2014 Google Inc. All rights reserved.
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License
 
 /// Provides convenience GitHub tools.
 library githubhelper;
@@ -88,40 +88,42 @@ Future<List<IssueComment>> addCommentsToIssue(GitHub gitHub,
 class GitHubUrl {
 
   /// Owner of the repositories. Can be a user or an organization.
-  String ownerName;
+  final String ownerName;
 
   /// Name of the repo.
-  String repoName;
+  final String repoName;
 
   /// Number of the issue.
-  String issueNumber;
+  final String issueNumber;
 
   /// The full HTTPS URL.
-  String fullUrl;
+  final String fullUrl;
 
   /// The URL simplified in GitHub short URL format.
-  String simplifiedUrl;
+  final String simplifiedUrl;
+
+  GitHubUrl._(this.ownerName, this.repoName, this.issueNumber, this.fullUrl,
+    this.simplifiedUrl);
 
   /// Parses a full GitHub [url] and returns a [GitHubUrl].
   static GitHubUrl parse(String url) {
     url = url.trim();
-    GitHubUrl gitHubUrl = new GitHubUrl();
-    gitHubUrl.fullUrl = url;
-    gitHubUrl.simplifiedUrl = simplifyUrl(url);
+    String simplifiedUrl = simplifyUrl(url);
 
     RegExp exp = new RegExp(r"([\w-_\.]+)\/([\w-_\.]+)(\#(\d+))?");
-    Match match = exp.firstMatch(gitHubUrl.simplifiedUrl);
+    Match match = exp.firstMatch(simplifiedUrl);
     if (match == null) {
       throw new FormatException("Wrong format of GitHub URL");
     }
-    gitHubUrl.ownerName = match.group(1);
-    gitHubUrl.repoName = match.group(2);
-    gitHubUrl.issueNumber = match.group(4);
-    if (gitHubUrl.ownerName == "") gitHubUrl.ownerName = null;
-    if (gitHubUrl.repoName == "") gitHubUrl.repoName = null;
-    if (gitHubUrl.issueNumber == "") gitHubUrl.issueNumber = null;
+    String ownerName = match.group(1);
+    String repoName = match.group(2);
+    String issueNumber = match.group(4);
+    if (ownerName == "") ownerName = null;
+    if (repoName == "") repoName = null;
+    if (issueNumber == "") issueNumber = null;
 
-    return gitHubUrl;
+    return new GitHubUrl._(ownerName, repoName, issueNumber, url,
+        simplifiedUrl);
   }
 
   /// Takes a [fullGitHubUrl] URL e.g.

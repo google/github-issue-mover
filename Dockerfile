@@ -21,9 +21,9 @@ ADD web /app/web
 RUN pub build
 
 ADD bin /app/bin
-RUN pub get
+RUN pub get --offline
 
-WORKDIR /app/bin
+WORKDIR /app
 CMD []
 ENTRYPOINT ["/usr/bin/dart", "/app/bin/server.dart"]
 EXPOSE 8080 8181 5858

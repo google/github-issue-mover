@@ -1,16 +1,16 @@
-/// Copyright 2014 Google Inc. All rights reserved.
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License
 
 /// Contains all the auto-suggestion widget related code.
 part of githubissuemover;
@@ -40,7 +40,7 @@ Map<String, List<Issue>> issuesCache = new Map<String, List<Issue>>();
 
 /// Initializes the Auto-completion module by fetching all repositories the user
 /// has access to and caching them.
-initAutoSuggest() {
+void initAutoSuggest() {
 
   // Disable Up and Down keys default behavior when drop-down is active to avoid
   // page or widget scrolling.
@@ -82,20 +82,20 @@ initAutoSuggest() {
 }
 
 /// Adds the given [repo] to the cache.
-_addRepoToCache(Repository repo) {
+void _addRepoToCache(Repository repo) {
   _addOwnerToCache(repo.owner.login);
   repositoriesList[repo.owner.login].add(repo);
 }
 
 /// Adds the given [ownerName] to the cache.
-_addOwnerToCache(String ownerName) {
+void _addOwnerToCache(String ownerName) {
   if(repositoriesList[ownerName] == null) {
     repositoriesList[ownerName] = new List<Repository>();
   }
 }
 
 /// Setup the auto-completion module to be used on the Issue Input field.
-refreshIssueAutoSuggest([e]) {
+void refreshIssueAutoSuggest([e]) {
   activeInput = issueInput;
   dropDown = issueDropDown;
   mode = ISSUE_MODE;
@@ -103,7 +103,7 @@ refreshIssueAutoSuggest([e]) {
 }
 
 /// Setup the auto-completion module to be used on the Repo Input field.
-refreshRepoAutoSuggest([e]) {
+void refreshRepoAutoSuggest([e]) {
   activeInput = repoInput;
   dropDown = repoDropDown;
   mode = REPO_MODE;
@@ -116,12 +116,12 @@ displayDropDown([_]) => dropDown.style.display = "block";
 
 /// Refreshes the list of suggestions based on the user input and what's in the
 /// cache.
-refreshAutoSuggest([e]) {
+void refreshAutoSuggest([e]) {
   // Don't refresh if the focus is not inside the drop down or the input
   // elements.
   if(document.activeElement.parent != dropDown
-      && document.activeElement != activeInput) {
-    return false;
+  && document.activeElement != activeInput) {
+    return;
   }
 
   // Make sure the Drop down is visible.
@@ -134,7 +134,7 @@ refreshAutoSuggest([e]) {
     // don't display errors for the issue since moving the focus out of the
     // input may trigger on onChange event.
     querySelector("#issueError").style.display = "none";
-    return false;
+    return;
   }
 
   String inputValue = activeInput.value;
@@ -143,27 +143,29 @@ refreshAutoSuggest([e]) {
   if(!inputValue.contains("/")) {
     // Filter owner based on prefix.
     List<String> matchingOwner = new List<String>()
-        ..addAll(repositoriesList.keys)
-        ..retainWhere((String owner) => owner.startsWith(inputValue));
+      ..addAll(repositoriesList.keys)
+      ..retainWhere((String owner) => owner.startsWith(inputValue));
     _setAutoSuggestList(owners: matchingOwner..sort());
 
-  // User is typing the repo name.
+    // User is typing the repo name.
   } else if(!inputValue.contains("#")) {
     // Filter repo based on prefix and if the repo has any issues.
-    List<Repository> ownerRepositories = repositoriesList[inputValue.split("/")[0]];
+    String ownerInput = inputValue.split("/")[0];
+    List<Repository> ownerRepositories = repositoriesList[ownerInput];
     if(ownerRepositories != null) {
       List<Repository> matchingRepositories = new List<Repository>()
-          ..addAll(ownerRepositories)
-          ..retainWhere((Repository repo) => repo.fullName.startsWith(inputValue)
-              && repo.hasIssues
-              && (repo.openIssuesCount > 0 || mode == REPO_MODE));
+        ..addAll(ownerRepositories)
+        ..retainWhere((Repository repo) =>
+      repo.fullName.startsWith(inputValue)
+      && repo.hasIssues
+      && (repo.openIssuesCount > 0 || mode == REPO_MODE));
       _setAutoSuggestList(repositories: matchingRepositories);
     } else {
       dropDown.children.clear();
       stopAutoSuggest();
     }
 
-  // User is typing the issue number.
+    // User is typing the issue number.
   } else {
     // Fetch Issues of the typed repo.
     GitHubUrl url = GitHubUrl.parse(inputValue);
@@ -182,31 +184,31 @@ refreshAutoSuggest([e]) {
       // Fetch the repo's issues using the GitHub API.
       gitHub.issues.listByRepo(new RepositorySlug(url.ownerName, url.repoName))
           .listen((Issue issue){
-              // Filter out Pull requests which are returned as issues.
-              if (!issue.htmlUrl.contains("\/pull\/")) {
-                issues.add(issue);
-                List<Issue> matchingIssues = new List<Issue>()
+            // Filter out Pull requests which are returned as issues.
+            if (!issue.htmlUrl.contains("\/pull\/")) {
+              issues.add(issue);
+              List<Issue> matchingIssues = new List<Issue>()
                   ..addAll(issues)
                   ..retainWhere((Issue issue) =>"${issue.number}".startsWith(
-                      url.issueNumber == null ? "" : url.issueNumber));
-                _setAutoSuggestList(issues: matchingIssues);
-              }
-            });
+                    url.issueNumber == null ? "" : url.issueNumber));
+              _setAutoSuggestList(issues: matchingIssues);
+            }
+      });
     }
     List<Issue> matchingIssues = new List<Issue>()
-             ..addAll(issues)
-             ..retainWhere((Issue issue) => "${issue.number}".startsWith(
-                 url.issueNumber == null ? "" : url.issueNumber));
+        ..addAll(issues)
+        ..retainWhere((Issue issue) => "${issue.number}".startsWith(
+          url.issueNumber == null ? "" : url.issueNumber));
     _setAutoSuggestList(issues: matchingIssues);
   }
-  return false;
+  return;
 }
 
 /// Display the given items in the auto-suggest widget with formatting depending
 /// on whether we want to display [issues], [repositories] or [owners].
 /// Only one list of item must be specified
-_setAutoSuggestList({List<String> owners, List<Repository> repositories,
-    List<Issue> issues}) {
+void _setAutoSuggestList({List<String> owners, List<Repository> repositories,
+                         List<Issue> issues}) {
 
   // Since we'll delete all children and re-create them we save what element had
   // the focus to re-apply it.
@@ -253,7 +255,7 @@ _setAutoSuggestList({List<String> owners, List<Repository> repositories,
   if(selectedElementText != null) {
     displayDropDown();
     LIElement newSelected = dropDown.children.firstWhere(
-        (LIElement elem) => elem.attributes["value"] == selectedElementText);
+            (LIElement elem) => elem.attributes["value"] == selectedElementText);
     newSelected.focus();
   }
 }
@@ -261,29 +263,29 @@ _setAutoSuggestList({List<String> owners, List<Repository> repositories,
 /// Creates the `<li>` element for the drop-down.
 LIElement _createDropDownElement(String text, String info,
                                  {bool isFinalValue: false}) {
-  LIElement elem = new LIElement();
-  elem.tabIndex = activeInput.tabIndex;
-  elem.attributes["finalValue"] = "$isFinalValue";
-  elem.onFocus.listen(displayDropDown);
-  elem.onBlur.listen(stopAutoSuggest);
-  elem.onKeyDown.listen(dropDownElemKeyPress);
-  elem.onClick.listen(selectDropDownItem);
-  elem.onFocus.listen(displayDropDown);
-  elem.text = text;
-  elem.attributes["value"] = text;
-  SpanElement infoElement = new SpanElement();
-  infoElement.onClick.listen((e) {
-    e.stopImmediatePropagation();
-    elem.click();
-  });
-  infoElement.classes.add("info");
-  infoElement.text = info;
+  LIElement elem = new LIElement()
+      ..tabIndex = activeInput.tabIndex
+      ..attributes["finalValue"] = "$isFinalValue"
+      ..onFocus.listen(displayDropDown)
+      ..onBlur.listen(stopAutoSuggest)
+      ..onKeyDown.listen(dropDownElemKeyPress)
+      ..onClick.listen(selectDropDownItem)
+      ..onFocus.listen(displayDropDown)
+      ..text = text
+      ..attributes["value"] = text;
+  SpanElement infoElement = new SpanElement()
+      ..onClick.listen((e) {
+        e.stopImmediatePropagation();
+        elem.click();
+      })
+      ..classes.add("info")
+      ..text = info;
   elem.children.add(infoElement);
   return elem;
 }
 
 /// Handles key press events when in the auto-suggest drop-down.
-dropDownElemKeyPress(KeyEvent e) {
+void dropDownElemKeyPress(KeyEvent e) {
   LIElement dropDownItem = e.target;
   if (e.keyCode == KeyCode.ENTER) {
     selectDropDownItem(e);
@@ -292,22 +294,21 @@ dropDownElemKeyPress(KeyEvent e) {
     activeInput.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.DOWN
-      && dropDownItem.nextElementSibling != null) {
+  && dropDownItem.nextElementSibling != null) {
     dropDownItem.nextElementSibling.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.UP
-      && dropDownItem.previousElementSibling == null) {
+  && dropDownItem.previousElementSibling == null) {
     activeInput.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.UP) {
     dropDownItem.previousElementSibling.focus();
     e.preventDefault();
   }
-  return false;
 }
 
 /// Handles selection (Click or Enter key) of an item in the suggestions.
-selectDropDownItem(e) {
+void selectDropDownItem(e) {
   LIElement dropDownItem = e.target;
   activeInput.value = dropDownItem.attributes["value"];
   activeInput.focus();
@@ -318,11 +319,10 @@ selectDropDownItem(e) {
   if (dropDownItem.attributes["finalValue"] == "true"){
     activeInput.dispatchEvent(new CustomEvent("change"));
   }
-  return false;
 }
 
 /// Hides the auto-suggest widget.
-stopAutoSuggest([_]) {
+void stopAutoSuggest([_]) {
   if (document.activeElement.parent != dropDown) {
     dropDown.style.display = "none";
   }

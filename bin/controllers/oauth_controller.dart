@@ -1,16 +1,16 @@
-/// Copyright 2014 Google Inc. All rights reserved.
-///
-/// Licensed under the Apache License, Version 2.0 (the "License");
-/// you may not use this file except in compliance with the License.
-/// You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software
-/// distributed under the License is distributed on an "AS IS" BASIS,
-/// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-/// See the License for the specific language governing permissions and
-/// limitations under the License
+// Copyright 2014 Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License
 
 part of github_issue_mover;
 
@@ -19,10 +19,10 @@ part of github_issue_mover;
 class OAuthController {
 
   /// Relative path to the Exchange code callback URL.
-  static const String exchangeCodePath = "/exchange_code";
+  static const String EXCHANGE_CODE_PATH = "/exchange_code";
 
   /// GitHub scopes we need access to.
-  static final List<String> GITHUB_SCOPES = ["repo"];
+  static const List<String> GITHUB_SCOPES = const <String>["repo"];
 
   /// OAuth flow Object.
   OAuth2Flow _oauthFlow;
@@ -53,7 +53,7 @@ class OAuthController {
   @RequestMapping(value: "/logout")
   String logout(ForceRequest req, Model model,
                 @RequestParam() String error_message) {
-    if(error_message != "") {
+    if (error_message != "") {
       CookieManager.addErrorCookie(req.request, error_message);
     }
     CookieManager.removeAccessTokenCookie(req.request);
@@ -61,7 +61,7 @@ class OAuthController {
   }
 
   /// OAuth Callback endpoint.
-  @RequestMapping(value: exchangeCodePath)
+  @RequestMapping(value: EXCHANGE_CODE_PATH)
   dynamic oauthCallback(ForceRequest req, Model model, @RequestParam() String
       code, @RequestParam() String error) {
     if (error != null && error == "") {
@@ -95,7 +95,7 @@ class OAuthController {
   ///
   /// We base this on the [Uri] the user requested on the server.
   OAuth2Flow getOauthGitHubHelper(Uri requestedUri) {
-    if(_oauthFlow == null) {
+    if (_oauthFlow == null) {
       OAuthCredentials credentials =
           OAuthCredentials.loadOauthCredentials(dev: isDev(requestedUri));
       initGitHub();
@@ -113,11 +113,11 @@ class OAuthController {
   static String getRedirectUrl(Uri requestedUri) {
     // Probable bug in App Engine Managed VMs.
     // The scheme returned is HTTP when it should be HTTPS.
-    if(isDev(requestedUri)) {
-      return "${requestedUri.origin}$exchangeCodePath";
+    if (isDev(requestedUri)) {
+      return "${requestedUri.origin}$EXCHANGE_CODE_PATH";
     }
     // When in prod we force HTTPS.
-    return "${requestedUri.origin}$exchangeCodePath"
+    return "${requestedUri.origin}$EXCHANGE_CODE_PATH"
         .replaceFirst("http://", "https://");
   }
 }

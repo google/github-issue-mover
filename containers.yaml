@@ -1,3 +1,4 @@
+# This file is needed in case you deploy this file to Google Compute Engine.
 version: v1
 containers:
   - name: github-issue-mover
