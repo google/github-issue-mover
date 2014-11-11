@@ -99,12 +99,12 @@ void main() {
 
   // Auto-suggest Issue event bindings.
   issueInput.onFocus.listen((e) => refreshIssueAutoSuggest(e));
-  issueInput.onChange.listen((e) => stopAutoSuggest(e));
+  issueInput.onChange.listen((e) => stopAutoSuggest(e, force: true));
   issueInput.onKeyUp.listen((e) => refreshIssueAutoSuggest(e));
   issueInput.onBlur.listen((e) => stopAutoSuggest(e));
   // Auto-suggest Repo event bindings.
   repoInput.onFocus.listen((e) => refreshRepoAutoSuggest(e));
-  repoInput.onChange.listen((e) => stopAutoSuggest(e));
+  repoInput.onChange.listen((e) => stopAutoSuggest(e, force: true));
   repoInput.onKeyUp.listen((e) => refreshRepoAutoSuggest(e));
   repoInput.onBlur.listen((e) => stopAutoSuggest(e));
   // Event bindings.
@@ -218,7 +218,12 @@ void fetchAuthorizedUser() {
   gitHub.users.getCurrentUser().then((CurrentUser user) {
     currentGitHubUser = user;
     displayAuthorizedUser();
-  }).catchError((_) => hideAuthorizedUser());
+  }).catchError((_) {
+    // A probable issue is that the auth token has expired or has been revoked.
+    // So we direct the user to /logout.
+    window.location.replace("/logout?error_message=Token%20expired.");
+    hideAuthorizedUser();
+  });
 }
 
 /// Starts the copy of the issue.

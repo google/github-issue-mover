@@ -119,8 +119,8 @@ displayDropDown([_]) => dropDown.style.display = "block";
 void refreshAutoSuggest([e]) {
   // Don't refresh if the focus is not inside the drop down or the input
   // elements.
-  if(document.activeElement.parent != dropDown
-  && document.activeElement != activeInput) {
+  if (document.activeElement.parent != dropDown
+      && document.activeElement != activeInput) {
     return;
   }
 
@@ -129,7 +129,7 @@ void refreshAutoSuggest([e]) {
 
   // If the key press is the down arrow (vs. typing a new letter) we move the
   // focus to the first element of the drop down and do not refresh.
-  if(e != null && e is KeyboardEvent && e.keyCode == KeyCode.DOWN) {
+  if (e != null && e is KeyboardEvent && e.keyCode == KeyCode.DOWN) {
     (dropDown.firstChild as LIElement).focus();
     // don't display errors for the issue since moving the focus out of the
     // input may trigger on onChange event.
@@ -140,7 +140,7 @@ void refreshAutoSuggest([e]) {
   String inputValue = activeInput.value;
 
   // User is typing the owner name.
-  if(!inputValue.contains("/")) {
+  if (!inputValue.contains("/")) {
     // Filter owner based on prefix.
     List<String> matchingOwner = new List<String>()
       ..addAll(repositoriesList.keys)
@@ -148,7 +148,7 @@ void refreshAutoSuggest([e]) {
     _setAutoSuggestList(owners: matchingOwner..sort());
 
     // User is typing the repo name.
-  } else if(!inputValue.contains("#")) {
+  } else if (!inputValue.contains("#")) {
     // Filter repo based on prefix and if the repo has any issues.
     String ownerInput = inputValue.split("/")[0];
     List<Repository> ownerRepositories = repositoriesList[ownerInput];
@@ -162,7 +162,7 @@ void refreshAutoSuggest([e]) {
       _setAutoSuggestList(repositories: matchingRepositories);
     } else {
       dropDown.children.clear();
-      stopAutoSuggest();
+      stopAutoSuggest(e);
     }
 
     // User is typing the issue number.
@@ -220,7 +220,7 @@ void _setAutoSuggestList({List<String> owners, List<Repository> repositories,
   // Naive implementation for now we just delete all existing auto-suggest
   // entries and re-create all new entries.
   dropDown.children.clear();
-  if(owners != null) {
+  if (owners != null) {
     owners.forEach((String owner) {
       String info = "... repositories";
       if (repositoriesList[owner].length != 0) {
@@ -252,7 +252,7 @@ void _setAutoSuggestList({List<String> owners, List<Repository> repositories,
 
   // Re-apply focus if we currently had to refresh while the user was browsing
   // the drop-down list.
-  if(selectedElementText != null) {
+  if (selectedElementText != null) {
     displayDropDown();
     LIElement newSelected = dropDown.children.firstWhere(
             (LIElement elem) => elem.attributes["value"] == selectedElementText);
@@ -293,11 +293,11 @@ void dropDownElemKeyPress(KeyEvent e) {
     activeInput.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.DOWN
-  && dropDownItem.nextElementSibling != null) {
+      && dropDownItem.nextElementSibling != null) {
     dropDownItem.nextElementSibling.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.UP
-  && dropDownItem.previousElementSibling == null) {
+      && dropDownItem.previousElementSibling == null) {
     activeInput.focus();
     e.preventDefault();
   } else if (e.keyCode == KeyCode.UP) {
@@ -320,10 +320,23 @@ void selectDropDownItem(e) {
   }
 }
 
-/// Hides the auto-suggest widget.
-void stopAutoSuggest([_]) {
-  if (document.activeElement.parent != dropDown) {
+/// Hides the auto-suggest widget if the focus moved out.
+/// You can force hiding the widget with []
+void stopAutoSuggest(e, {force: false}) {
+  if(force) {
     dropDown.style.display = "none";
+    return;
   }
+  UListElement originalDropDown = dropDown;
+  InputElement originalActiveInput = activeInput;
+  // Delaying this check by a few ms because the [document.activeElement] is not
+  // set yet on Blur events in FireFox.
+  var timer = new Timer(const Duration(milliseconds: 10), (){
+    print(document.activeElement);
+    if (document.activeElement.parent != originalDropDown
+        && document.activeElement != originalActiveInput) {
+      originalDropDown.style.display = "none";
+    }
+  });
 }
 
