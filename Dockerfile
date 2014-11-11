@@ -12,6 +12,12 @@
 FROM google/dart
 MAINTAINER Nicolas Garnier <nivco@google.com>
 
+# Update aptitude with new repo
+RUN apt-get update
+
+# Install software
+RUN apt-get install -y git
+
 WORKDIR /app
 
 ADD pubspec.yaml /app/

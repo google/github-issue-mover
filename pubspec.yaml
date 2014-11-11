@@ -1,7 +1,7 @@
 name: github-issue-mover
 description: Issue Mover for Github
 dependencies:
-  forcemvc: '>=0.5.3 <1.0.0'
+  forcemvc: '>=0.5.7 <0.6.0'
   http: '>=0.9.0 <0.10.0'
   http_server: '>=0.9.0 <0.10.0'
   logging: '>=0.9.0 <0.10.0'
@@ -10,6 +10,9 @@ dependencies:
   cookie: ">=0.0.4 <0.1.0"
   intl: any
   markdown: ">=0.7.0 <0.8.0"
-  github: ">=2.1.2 <3.0.0"
+  github:
+    git:
+      url: https://github.com/nicolasgarnier/github.dart
+      ref: 12df15c922ea688ec1e2310c5dcdd9f0af4ff7fe
 dev_dependencies:
   unittest: '>=0.10.0'
