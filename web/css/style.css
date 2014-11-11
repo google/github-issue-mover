@@ -321,6 +321,7 @@
     color: red;
     display: none;
     margin-bottom: 20px;
+    max-width: 340px;
   }
 
   /* ===== Footer ====== */
