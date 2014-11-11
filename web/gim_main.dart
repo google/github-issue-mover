@@ -99,12 +99,12 @@ void main() {
 
   // Auto-suggest Issue event bindings.
   issueInput.onFocus.listen((e) => refreshIssueAutoSuggest(e));
-  issueInput.onChange.listen((e) => stopAutoSuggest(e, force: true));
+  issueInput.onChange.listen((e) => stopAutoSuggest(e));
   issueInput.onKeyUp.listen((e) => refreshIssueAutoSuggest(e));
   issueInput.onBlur.listen((e) => stopAutoSuggest(e));
   // Auto-suggest Repo event bindings.
   repoInput.onFocus.listen((e) => refreshRepoAutoSuggest(e));
-  repoInput.onChange.listen((e) => stopAutoSuggest(e, force: true));
+  repoInput.onChange.listen((e) => stopAutoSuggest(e));
   repoInput.onKeyUp.listen((e) => refreshRepoAutoSuggest(e));
   repoInput.onBlur.listen((e) => stopAutoSuggest(e));
   // Event bindings.

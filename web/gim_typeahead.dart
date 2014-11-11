@@ -317,21 +317,20 @@ void selectDropDownItem(e) {
   // onChange event of the input field.
   if (dropDownItem.attributes["finalValue"] == "true"){
     activeInput.dispatchEvent(new CustomEvent("change"));
+    dropDown.style.display = "none";
+  } else {
+    displayDropDown();
   }
 }
 
 /// Hides the auto-suggest widget if the focus moved out.
 /// You can force hiding the widget with []
-void stopAutoSuggest(e, {force: false}) {
-  if(force) {
-    dropDown.style.display = "none";
-    return;
-  }
+void stopAutoSuggest(e) {
   UListElement originalDropDown = dropDown;
   InputElement originalActiveInput = activeInput;
   // Delaying this check by a few ms because the [document.activeElement] is not
   // set yet on Blur events in FireFox.
-  var timer = new Timer(const Duration(milliseconds: 10), (){
+  var timer = new Timer(const Duration(milliseconds: 1), (){
     print(document.activeElement);
     if (document.activeElement.parent != originalDropDown
         && document.activeElement != originalActiveInput) {
