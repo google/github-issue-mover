@@ -264,13 +264,12 @@ void _setAutoSuggestList({List<String> owners, List<Repository> repositories,
 LIElement _createDropDownElement(String text, String info,
                                  {bool isFinalValue: false}) {
   LIElement elem = new LIElement()
-      ..tabIndex = activeInput.tabIndex
+      ..tabIndex = -1
       ..attributes["finalValue"] = "$isFinalValue"
       ..onFocus.listen(displayDropDown)
       ..onBlur.listen(stopAutoSuggest)
       ..onKeyDown.listen(dropDownElemKeyPress)
       ..onClick.listen(selectDropDownItem)
-      ..onFocus.listen(displayDropDown)
       ..text = text
       ..attributes["value"] = text;
   SpanElement infoElement = new SpanElement()
