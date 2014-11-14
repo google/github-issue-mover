@@ -9,27 +9,5 @@
 # > docker build -t githubissuemover github.com/nicolasgarnier/github-issue-mover
 # > docker run -p 80:8080 -d githubissuemover
 
-FROM google/dart
+FROM google/dart-runtime
 MAINTAINER Nicolas Garnier <nivco@google.com>
-
-# Update aptitude with new repo
-RUN apt-get update
-
-# Install software
-RUN apt-get install -y git
-
-WORKDIR /app
-
-ADD pubspec.yaml /app/
-RUN pub get
-
-ADD web /app/web
-RUN pub build
-
-ADD bin /app/bin
-RUN pub get --offline
-
-WORKDIR /app
-CMD []
-ENTRYPOINT ["/usr/bin/dart", "/app/bin/server.dart"]
-EXPOSE 8080 8181 5858
