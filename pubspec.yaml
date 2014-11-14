@@ -1,15 +1,12 @@
-name: github-issue-mover
+name: github_issue_mover
 description: Issue Mover for Github
+homepage: https://github.com/google/github-issue-mover
 dependencies:
-  forcemvc: '>=0.5.7+1 <0.6.0'
-  http: '>=0.9.0 <0.10.0'
-  http_server: '>=0.9.0 <0.10.0'
-  logging: '>=0.9.0 <0.10.0'
-  yaml: '>=0.9.0 <0.10.0'
   browser: any
-  cookie: ">=0.0.4 <0.1.0"
+  cookie: '>=0.0.4 <0.1.0'
+  forcemvc: '>=0.5.7+1 <0.6.0'
+  github: '>=2.1.3 <3.0.0'
   intl: any
-  markdown: ">=0.7.0 <0.8.0"
-  github: ">=2.1.3 <3.0.0"
-dev_dependencies:
-  unittest: '>=0.10.0'
+  logging: '>=0.9.0 <0.10.0'
+  markdown: '>=0.7.0 <0.8.0'
+  yaml: '>=0.9.0 <0.10.0'
