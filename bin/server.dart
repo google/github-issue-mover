@@ -38,6 +38,11 @@ void main() {
                                    clientFiles: '../build/web/',
                                    views: './views/');
 
+  // Handles 404 gracefully.
+  server.notFound((ForceRequest req, Model model) {
+    return "redirect:/";
+  });
+
   // Set up logging.
   server.setupConsoleLog(Level.FINEST);
 
