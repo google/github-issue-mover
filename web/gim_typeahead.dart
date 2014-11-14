@@ -331,7 +331,6 @@ void stopAutoSuggest(e) {
   // Delaying this check by a few ms because the [document.activeElement] is not
   // set yet on Blur events in FireFox.
   var timer = new Timer(const Duration(milliseconds: 1), (){
-    print(document.activeElement);
     if (document.activeElement.parent != originalDropDown
         && document.activeElement != originalActiveInput) {
       originalDropDown.style.display = "none";
