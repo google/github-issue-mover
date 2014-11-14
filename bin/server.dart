@@ -24,6 +24,7 @@ import 'package:github/server.dart';
 part 'logic/cookies.dart';
 part 'logic/oauth_credentials.dart';
 part 'controllers/oauth_controller.dart';
+part 'controllers/app_engine_controller.dart';
 
 /// This will start the Issue Mover for GitHub app by starting a DartForce HTTP
 /// server.
