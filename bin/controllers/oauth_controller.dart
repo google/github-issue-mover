@@ -27,6 +27,12 @@ class OAuthController {
   /// OAuth flow Object.
   OAuth2Flow _oauthFlow;
 
+  /// Catches all un-catched exceptions.
+  @ExceptionHandler()
+  String errorCatch(ForceRequest req, Model model) {
+    return "redirect:/logout?error_message=An%20unexpeceted%20error%20happened";
+  }
+
   /// Redirects the user to the GitHub API authorization page.
   @RequestMapping(value: "/oauth_redirect")
   HttpResponse authRedirect(ForceRequest req, Model model) {
