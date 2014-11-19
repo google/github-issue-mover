@@ -11,9 +11,10 @@ That's where you specify which folders contain client-side (static) resources.
 Just like for most Dart apps we serve the compiled client side resources that
 are located in **../build/web**.
 
-All the request handling and routing is defined in the Controller
-[controllers/oauth_controller.dart](controllers/oauth_controller.dart). Force
-MVC allows to easily map a path to a method using annotations.
+All the request handling and routing is defined in the Controllers
+[controllers/oauth_controller.dart](controllers/oauth_controller.dart) and
+[controllers/app_engine_controller.dart](controllers/app_engine_controller.dart).
+Force MVC allows to easily map a path to a method using annotations.
 
 The controller methods takes care of either redirecting users to another URL or
 displaying a "view" which are basically web pages (templates) into which values
