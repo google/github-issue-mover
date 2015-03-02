@@ -68,13 +68,8 @@ Future<List<IssueComment>> addCommentsToIssue(GitHub gitHub,
           if(comments.isEmpty) {
             _completer.complete(_commentsAdded);
           } else {
-            // The GitHub API will often create Comments in the wrong order if
-            // they are created too fast. Wait 1 sec between issue creations
-            // to workaround this bug.
-            var timer = new Timer(new Duration(milliseconds: 1000), (){
-                addCommentsToIssue(gitHub, comments, issue, repo, tracker,
-                    _completer, _commentsAdded);
-            });
+            addCommentsToIssue(gitHub, comments, issue, repo, tracker,
+                _completer, _commentsAdded);
         }
     }).catchError((error) => _completer.completeError(error));;
   }
