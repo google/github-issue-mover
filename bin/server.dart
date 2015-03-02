@@ -19,12 +19,12 @@ import 'package:logging/logging.dart';
 import 'package:forcemvc/force_mvc.dart';
 import 'package:yaml/yaml.dart';
 import 'package:github/server.dart';
+import 'package:appengine/appengine.dart';
 
 
 part 'logic/cookies.dart';
 part 'logic/oauth_credentials.dart';
 part 'controllers/oauth_controller.dart';
-part 'controllers/app_engine_controller.dart';
 
 /// This will start the Issue Mover for GitHub app by starting a DartForce HTTP
 /// server.
@@ -33,20 +33,18 @@ part 'controllers/app_engine_controller.dart';
 void main() {
 
   // Create a force HTTP server.
-  WebServer server = new WebServer(host: '0.0.0.0',
-                                   port: 8080,
-                                   clientFiles: '../build/web/',
-                                   views: './views/');
+  WebApplication app = new WebApplication(clientFiles: '../build/web/',
+                                          views: './views/');
 
   // Handles 404 gracefully.
-  server.notFound((ForceRequest req, Model model) {
+  app.notFound((ForceRequest req, Model model) {
     return "redirect:/";
   });
 
   // Set up logging.
-  server.setupConsoleLog(Level.FINEST);
+  app.setupConsoleLog(Level.FINEST);
 
   // Start serving.
-  server.start();
+  runAppEngine(app.requestHandler);
 }
 
