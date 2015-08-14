@@ -11,3 +11,6 @@ dependencies:
   markdown: '>=0.7.0 <0.8.0'
   yaml: '>=2.0.0 <3.0.0'
   appengine: any
+transformers:
+- $dart2js:
+    sourceMaps: true
