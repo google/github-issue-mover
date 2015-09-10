@@ -15,7 +15,7 @@ If you deploy this app on a _production_ server (i.e. not _localhost_) you need 
 
  - [Register a new GitHub Application](https://github.com/settings/applications/)
  - Set the **Authorization callback URL** to `https://<project_name>.appspot.com/exchange_code`
- - Copy the **Client ID** and **Client Secret** in the **server/credentials.yaml** file
+ - Copy the **Client ID** and **Client Secret** in the **bin/credentials.yaml** file
 
 ## Running and deploying
 

@@ -1,5 +1,4 @@
 # This file is needed in the case you deploy this app to Google App Engine.
-version: 2march2015
 runtime: custom
 api_version: 1
 threadsafe: true
