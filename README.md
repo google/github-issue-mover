@@ -1,4 +1,4 @@
-#Issue Mover for GitHub
+# Issue Mover for GitHub
 
 This tool make it easy to migrate issues between repos:
  - Copy the issue in the destination repo
@@ -9,7 +9,7 @@ Issue Mover for GitHub has been written entirely in [Dart](http://www.dartlang.o
 (both client side and server side code) and is hosted on [Google App Engine Managed VM](https://cloud.google.com/appengine/docs/managed-vms/).
 For a walk through of the code and backend deployment options please read [CODE_WALKTHROUGH](CODE_WALKTHROUGH.md)
 
-##Usage
+## Usage
 
 The tool is hosted online at [github-issue-mover.appspot.com](https://github-issue-mover.appspot.com/)
 
@@ -18,7 +18,7 @@ It looks like this:
 <img width="600px" src="https://github.com/google/github-issue-mover/raw/master/README_assets/app.png">
 
 
-##How to use
+## How to use
 
 You can copy paste full GitHub URLs. For instance you can copy paste
 
@@ -52,13 +52,13 @@ This will create a new issue which is a copy of the original one, with mentions 
 
 <img width="600px" src="https://github.com/google/github-issue-mover/raw/master/README_assets/result.png">
 
-##Disclaimer
+## Disclaimer
 
 Even though a lot of contributors are working for Google this is not an official Google Product.
-This is an open-source sample application written in Dart and runable on Google App Engine and Google Compute Engine with a running
-test instance hosted on App Engine.
+This is an open-source sample application written in Dart and runable on Google App Engine and Google Compute Engine with a running test instance hosted on App Engine.
 
-##License
+## License
 
-Apache 2.0
+[Apache 2.0](LICENSE)
+
 Copyright 2014 Google Inc
