@@ -24,7 +24,8 @@ displayIssueDetails(Issue issue) {
   issueOverviewUserAvatar.src = issue.user.avatarUrl;
   issueOverviewBody.innerHtml = issue.body != ""
       ? markdownToHtml(issue.body) : "No description provided.";
-  issueOverviewComment.text = "${issue.commentsCount} Comment(s)";
+  issueOverviewComment.text = issue.commentsCount != 1
+      ? "${issue.commentsCount} Comments" : "1 Comment";
   issueError.style.display = "none";
   issueOverview.style.display = "block";
 }
