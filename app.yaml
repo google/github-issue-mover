@@ -1,8 +1,8 @@
 # This file is needed in the case you deploy this app to Google App Engine.
 runtime: custom
+env: flex
 api_version: 1
 threadsafe: true
-vm: true
 
 handlers:
   - url: /.*
