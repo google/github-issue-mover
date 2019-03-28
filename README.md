@@ -1,4 +1,4 @@
-# UNFORTUNATELY THIS TOOL IS NOW DEPRECATED
+# THIS TOOL IS NOW DEPRECATED
 
 Reasons for deprecation:
  - The deprecation of AppEngine Custom VM
