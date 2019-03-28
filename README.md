@@ -1,3 +1,12 @@
+# UNFORTUNATELY THIS TOOL IS NOW DEPRECATED
+
+Reasons for deprecation:
+ - The deprecation of AppEngine Custom VM
+ - GitHub releasing a similar built-in feature
+ - Now low(er) usage (Since Github launched their "move issues feature within the same organization)
+ 
+ If you are interrested in updating the tool, port it to a supported AppEngine VM and update the Dart code so that it compiles let the owner know.
+
 # Issue Mover for GitHub
 
 This tool make it easy to migrate issues between repos:
