@@ -19,8 +19,6 @@ import 'package:logging/logging.dart';
 import 'package:forcemvc/force_mvc.dart';
 import 'package:yaml/yaml.dart';
 import 'package:github/server.dart';
-import 'package:appengine/appengine.dart';
-
 
 part 'logic/cookies.dart';
 part 'logic/oauth_credentials.dart';
@@ -34,7 +32,9 @@ void main() {
 
   // Create a force HTTP server.
   WebApplication app = new WebApplication(clientFiles: '../build/web/',
-                                          views: './views/');
+                                          views: './views/',
+                                          host: '0.0.0.0',
+                                          port: 8080);
 
   // Handles 404 gracefully.
   app.notFound((ForceRequest req, Model model) {
@@ -45,6 +45,7 @@ void main() {
   app.setupConsoleLog(Level.FINEST);
 
   // Start serving.
-  runAppEngine(app.requestHandler);
+  // runAppEngine(app.requestHandler);
+  app.start();
 }
 

@@ -5,10 +5,6 @@ packages:
     description: analyzer
     source: hosted
     version: "0.23.0"
-  appengine:
-    description: appengine
-    source: hosted
-    version: "0.2.6"
   args:
     description: args
     source: hosted
@@ -33,46 +29,18 @@ packages:
     description: csslib
     source: hosted
     version: "0.11.0+4"
-  fixnum:
-    description: fixnum
-    source: hosted
-    version: "0.9.1+2"
   forcemvc:
     description: forcemvc
     source: hosted
     version: "0.7.1"
-  gcloud:
-    description: gcloud
-    source: hosted
-    version: "0.1.4+1"
   github:
     description: github
     source: hosted
     version: "2.1.8"
-  googleapis:
-    description: googleapis
-    source: hosted
-    version: "0.6.0"
-  googleapis_auth:
-    description: googleapis_auth
-    source: hosted
-    version: "0.2.3+1"
-  googleapis_beta:
-    description: googleapis_beta
-    source: hosted
-    version: "0.9.0"
   html5lib:
     description: html5lib
     source: hosted
     version: "0.12.0"
-  http:
-    description: http
-    source: hosted
-    version: "0.11.1+3"
-  http_parser:
-    description: http_parser
-    source: hosted
-    version: "0.0.2+5"
   http_server:
     description: http_server
     source: hosted
@@ -97,10 +65,6 @@ packages:
     description: matcher
     source: hosted
     version: "0.11.4+1"
-  memcache:
-    description: memcache
-    source: hosted
-    version: "0.1.0"
   mime:
     description: mime
     source: hosted
@@ -121,10 +85,6 @@ packages:
     description: petitparser
     source: hosted
     version: "1.3.7"
-  protobuf:
-    description: protobuf
-    source: hosted
-    version: "0.3.5+2"
   quiver:
     description: quiver
     source: hosted
@@ -165,3 +125,5 @@ packages:
     description: yaml
     source: hosted
     version: "2.1.2"
+sdks:
+  dart: ">=1.7.0-dev.4.0 <2.0.0"
