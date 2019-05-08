@@ -9,5 +9,6 @@
 # > docker build -t githubissuemover github.com/nicolasgarnier/github-issue-mover
 # > docker run -p 80:8080 -d githubissuemover
 
-FROM google/dart-runtime
+FROM google/dart-runtime:1.24
+RUN pub build
 MAINTAINER Nicolas Garnier <nivco@google.com>
